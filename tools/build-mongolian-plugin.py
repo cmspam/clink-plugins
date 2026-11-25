@@ -81,7 +81,14 @@ def after_vowel_table(translit: dict) -> str:
 
 
 def latin_table(translit: dict) -> str:
-    return " ".join(f"{latin}:{skeleton}{cost}" for latin, skeleton, cost in translit["latin"])
+    rules = [f"{latin}:{skeleton}{cost}" for latin, skeleton, cost in translit["latin"]]
+    # The hard sign is written with an apostrophe in the Latin spelling that
+    # Mongolian typists use, so "yav'ya" means явъя. maral has no letter for
+    # the sign, because it leaves signs off the end of words as a rule; the
+    # sign that is written in the middle still has to be typed, so it takes
+    # the same skeleton as "i" at a cost, and the fallback spelling writes ъ.
+    rules.append("':I3")
+    return " ".join(rules)
 
 
 def main() -> None:
@@ -177,7 +184,8 @@ SPELLING = {{"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
              "g": "г", "h": "х", "j": "ж", "k": "к", "kh": "х", "l": "л",
              "m": "м", "n": "н", "p": "п", "q": "ч", "r": "р", "s": "с",
              "sh": "ш", "shch": "щ", "t": "т", "ts": "ц", "v": "в", "w": "в",
-             "ya": "я", "ye": "э", "yo": "ё", "yu": "ю", "z": "з", "zh": "ж"}}
+             "ya": "я", "ye": "э", "yo": "ё", "yu": "ю", "z": "з", "zh": "ж",
+             "'": "ъ"}}
 
 WORDS = []
 INDEX = {{}}
@@ -359,9 +367,14 @@ def on_action(action, value, state):
 
 def _ordinary(word):
     """Words worth rewriting: not a code, not an acronym, not a number."""
-    if not word or not word.isascii() or not word.isalpha():
+    if not word or not word.isascii():
         return False
-    if len(word) > 1 and word.isupper():
+    # The hard sign is written with an apostrophe in Latin Mongolian typing,
+    # so a word can carry one in the middle.
+    letters = word.replace("'", "")
+    if not letters or not letters.isalpha():
+        return False
+    if len(letters) > 1 and letters.isupper():
         return False
     return True
 
