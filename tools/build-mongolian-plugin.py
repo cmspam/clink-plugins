@@ -344,12 +344,22 @@ def _wanted(state):
         return False
     if state.get("always"):
         return True
-    code = setting("language") or ""
+    code = state.get("_language") or setting("language") or ""
     return code.startswith("mn")
 
 
 def initial():
     return {{"on": True, "always": False}}
+
+
+def on_open(state):
+    state["_language"] = setting("language")
+    return state
+
+
+def on_language(code, state):
+    state["_language"] = code
+    return state
 
 
 def settings(state):
