@@ -18,10 +18,14 @@ import json
 import pathlib
 import sys
 
-# The compact code: one printable character per Mongolian letter.
+# The compact code: one printable character per Mongolian letter. The code
+# of a letter whose spelling never changes is the character of its own
+# skeleton piece, so a word made only of those letters is its own skeleton
+# and the plugin never has to walk it. The letters whose spelling does
+# change are given the digits, and the digits are below "A", so a word that
+# holds one of them is picked out with a single comparison.
 CYR = "абвгдежзийклмнопрстуфхцчшщъыьэюяёүө"
-CODE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345678"
-assert len(CYR) == len(CODE) == 35, (len(CYR), len(CODE))
+LOW_CODES = "0123456789-."
 
 HEADER = '''# ---
 # name: Mongolian Latin
@@ -54,41 +58,35 @@ HEADER = '''# ---
 '''
 
 
-def encode(word: str) -> str:
-    return "".join(CODE[CYR.index(letter)] for letter in word)
-
-
-def skeleton_table(translit: dict) -> str:
-    """Cyrillic letter to the spellings it can take, as one string."""
-    parts = []
+def build_tables(translit: dict):
+    """The code character of every letter, and the spellings it can take."""
+    options = {}
     for letter in CYR:
-        alternatives = translit["cyr"].get(letter)
-        if alternatives is None:
-            alternatives = [[letter, 0]]
-        pieces = []
-        for skeleton, cost in alternatives:
-            pieces.append(("-" if skeleton == "" else skeleton) + str(cost))
-        parts.append(letter + ":" + " ".join(pieces))
-    return ";".join(parts)
+        alts = translit["cyr"].get(letter) or [[letter, 0]]
+        options[letter] = sorted((skeleton, int(cost)) for skeleton, cost in alts)
+    after = {}
+    for letter, alts in translit.get("cyr_after_vowel", {}).items():
+        after[letter] = sorted((skeleton, int(cost)) for skeleton, cost in alts)
 
+    # A letter whose spelling never changes takes the character of its own
+    # piece as its code, so a word made only of those letters is its own
+    # skeleton and the plugin never has to walk it. The letters whose piece
+    # is more than one letter long cannot do that, because the skeleton
+    # writes them as they are: "я" is "IA" and "иа" is "I" and "A", and
+    # the two have to look the same to the word that means them.
+    steady = [letter for letter in CYR
+              if len(options[letter]) == 1 and letter not in after
+              and len(options[letter][0][0]) == 1]
+    loose = [letter for letter in CYR if letter not in steady]
 
-def after_vowel_table(translit: dict) -> str:
-    parts = []
-    for letter, alternatives in translit.get("cyr_after_vowel", {}).items():
-        pieces = [("-" if skeleton == "" else skeleton) + str(cost) for skeleton, cost in alternatives]
-        parts.append(letter + ":" + " ".join(pieces))
-    return ";".join(parts)
-
-
-def latin_table(translit: dict) -> str:
-    rules = [f"{latin}:{skeleton}{cost}" for latin, skeleton, cost in translit["latin"]]
-    # The hard sign is written with an apostrophe in the Latin spelling that
-    # Mongolian typists use, so "yav'ya" means явъя. maral has no letter for
-    # the sign, because it leaves signs off the end of words as a rule; the
-    # sign that is written in the middle still has to be typed, so it takes
-    # the same skeleton as "i" at a cost, and the fallback spelling writes ъ.
-    rules.append("':I3")
-    return " ".join(rules)
+    code = {}
+    for letter in steady:
+        code[letter] = options[letter][0][0]
+    # The other letters take the digits and the marks below "A", so that a
+    # word holding one of them is picked out with a single comparison.
+    for index, letter in enumerate(loose):
+        code[letter] = LOW_CODES[index]
+    return code, options, after, steady, loose
 
 
 def main() -> None:
@@ -102,6 +100,10 @@ def main() -> None:
     translit = json.loads(pathlib.Path(arguments.translit).read_text(encoding="utf-8"))
     if set(translit["cyr"]) != set(CYR):
         raise SystemExit("The transliteration table and the compact code disagree about the alphabet.")
+    code, options, after, steady, loose = build_tables(translit)
+    if len(set(code.values())) != len(CYR):
+        raise SystemExit("Two letters were given the same code character.")
+
     counts = []
     for line in pathlib.Path(arguments.words).read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -123,12 +125,16 @@ def main() -> None:
     if not counts:
         raise SystemExit("No usable words.")
 
-    data = "".join(encode(word) + "\\n" for word, _ in counts)
-    # The words go out as escaped newlines, in a few long lines, so the file
-    # stays well inside Clink's line limit.
+    def encode(word: str) -> str:
+        return "".join(code[letter] for letter in word)
+
+    # The words go out as one string in a few long lines, so the file stays
+    # well inside Clink's line limit. The separator is a bar rather than a
+    # newline, because a newline inside the packed plugin is written as two
+    # characters and the JSON that carries it doubles the backslash.
     chunks, current = [], ""
-    for word in counts:
-        piece = encode(word[0]) + "\\n"
+    for word, _ in counts:
+        piece = encode(word) + "|"
         if len(current) + len(piece) > 1000:
             chunks.append(current)
             current = ""
@@ -136,48 +142,56 @@ def main() -> None:
     if current:
         chunks.append(current)
     literal = "\n".join(f'    "{chunk}"' for chunk in chunks)
-    vowels = "".join(sorted(set(translit["harmony"]["back"]) | set(translit["harmony"]["front"]) | set("иыю")))
+
+    # The tables the plugin carries, keyed by the code character.
+    letter_table = {code[letter]: letter for letter in CYR}
+    alts = {}
+    for letter in loose:
+        alts[code[letter]] = list(options[letter])
+    after_of = {}
+    for letter, alts_list in after.items():
+        after_of[code[letter]] = list(alts_list)
+    vowels = set(translit["harmony"]["back"]) | set(translit["harmony"]["front"]) | set("иыю")
+    vowel_codes = "".join(sorted(code[letter] for letter in vowels))
+    cyr_vowels = "".join(sorted(vowels))
+
+    # The Latin rules, with the pieces written as the characters of the
+    # skeleton alphabet.
+    latin = []
+    for spelling, skeleton, cost in translit["latin"]:
+        latin.append((spelling, skeleton, cost))
+    # The hard sign is written with an apostrophe in the Latin spelling that
+    # Mongolian typists use, so "yav'ya" means явъя. maral has no letter for
+    # the sign, because it leaves signs off the end of words as a rule; the
+    # sign that is written in the middle still has to be typed, so it takes
+    # the same skeleton as "i" at a cost, and the fallback spelling writes ъ.
+    latin.append(("'", "I", 3))
 
     body = f'''
 import math
 
 CYR = "{CYR}"
-CODE = "{CODE}"
-LETTER = {{}}
-for position in range(len(CODE)):
-    LETTER[CODE[position]] = CYR[position]
-VOWELS = "{vowels}"
+LETTER = {letter_table!r}
+
+# The other spellings of the letters whose spelling changes, and the change
+# that happens after a vowel.
+ALTS = {alts!r}
+AFTER = {after_of!r}
+VOWEL_CODES = "{vowel_codes}"
+VOWELS = "{cyr_vowels}"
 
 
-def _parse_pairs(spec):
-    """letter:SPELLING COST SPELLING COST; into a lookup."""
+def _latin_rules(rules):
+    """Latin spellings and their skeletons, grouped by first letter."""
     out = {{}}
-    for part in spec.split(";"):
-        if not part:
-            continue
-        letter, alternatives = part.split(":")
-        out[letter] = []
-        for item in alternatives.split():
-            out[letter].append(("" if item[:-1] == "-" else item[:-1], int(item[-1])))
-    return out
-
-
-COLLAPSE = _parse_pairs("{skeleton_table(translit)}")
-AFTER = _parse_pairs("{after_vowel_table(translit)}")
-
-
-def _latin_rules(spec):
-    """latin:SPELLING COST, grouped by first letter, longest match first."""
-    out = {{}}
-    for part in spec.split():
-        latin, rest = part.split(":")
-        out.setdefault(latin[0], []).append((latin, rest[:-1], int(rest[-1])))
+    for spelling, skeleton, cost in rules:
+        out.setdefault(spelling[0], []).append((spelling, skeleton, cost))
     for key in out:
-        out[key].sort(key=lambda rule: (-len(rule[0]), rule[2]))
+        out[key] = sorted(out[key], key=lambda rule: (-len(rule[0]), rule[2]))
     return out
 
 
-LATIN = _latin_rules("{latin_table(translit)}")
+LATIN = _latin_rules({latin!r})
 
 # The spelling of every Latin rule that has only one answer.
 SPELLING = {{"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
@@ -187,30 +201,45 @@ SPELLING = {{"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
              "ya": "я", "ye": "э", "yo": "ё", "yu": "ю", "z": "з", "zh": "ж",
              "'": "ъ"}}
 
-WORDS = []
 INDEX = {{}}
 
 
-def _expand(word, cap):
-    """Every spelling of one Mongolian word, cheapest first."""
-    out = [("", 0)]
-    for position in range(len(word)):
-        letter = word[position]
-        if position and word[position - 1] in VOWELS and letter in AFTER:
-            alternatives = AFTER[letter]
+def _spellings(record):
+    """Every spelling of one word, cheapest first.
+
+    A word is spelled by choosing one piece for each letter, and only the
+    letters that can be spelled more than one way have a choice to make. The
+    pieces are copied rather than rebuilt, so a word with a few loose letters
+    stays cheap.
+    """
+    pieces = []
+    spots = []
+    previous = ""
+    for character in record:
+        if character < "A":
+            # A letter whose spelling changes.
+            options = ALTS[character]
+            if previous in VOWEL_CODES and character in AFTER:
+                options = AFTER[character]
+            pieces.append(options[0][0])
+            if len(options) > 1:
+                spots.append((len(pieces) - 1, options))
         else:
-            alternatives = COLLAPSE.get(letter, [(letter, 0)])
-        if len(alternatives) == 1:
-            skeleton, cost = alternatives[0]
-            out = [(seen + skeleton, total + cost) for seen, total in out]
-        else:
-            grown = []
-            for seen, total in out:
-                for skeleton, cost in alternatives:
-                    grown.append((seen + skeleton, total + cost))
-            grown.sort(key=lambda item: item[1])
-            out = grown[:cap]
-    return out
+            pieces.append(character)
+        previous = character
+    out = [(pieces, 0)]
+    for position, options in spots:
+        grown = []
+        for base, cost in out:
+            for piece, extra in options:
+                copy = base.copy()
+                copy[position] = piece
+                grown.append((copy, cost + extra))
+        out = grown
+    spellings = []
+    for base, cost in out:
+        spellings.append(("".join(base), cost))
+    return spellings
 
 
 def _parse(latin, beam):
@@ -221,65 +250,89 @@ def _parse(latin, beam):
     for position in range(length):
         if not paths[position]:
             continue
-        current = sorted(paths[position].items(), key=lambda item: (item[1], item[0]))[:beam]
+        current = []
+        for key in paths[position].keys():
+            current.append((paths[position][key], key))
+        current = sorted(current)[:beam]
         rules = LATIN.get(latin[position], [])
         if not rules:
-            for seen, cost in current:
+            for cost, seen in current:
                 key = seen + latin[position]
                 if key not in paths[position + 1] or paths[position + 1][key] > cost:
                     paths[position + 1][key] = cost
             continue
         for rule, skeleton, rulecost in rules:
-            if not latin.startswith(rule, position):
+            if latin[position:position + len(rule)] != rule:
                 continue
             target = position + len(rule)
-            for seen, cost in current:
+            for cost, seen in current:
                 key = seen + skeleton
                 value = cost + rulecost + 1
                 if key not in paths[target] or paths[target][key] > value:
                     paths[target][key] = value
-    out = sorted(paths[length].items(), key=lambda item: (item[1], len(item[0]), item[0]))
+    out = []
+    for key in paths[length].keys():
+        out.append((key, paths[length][key]))
+    out = sorted(out, key=lambda item: (item[1], len(item[0]), item[0]))
     return out[:beam]
 
 
 def _load():
     """Build the index: each word under every spelling that reaches it."""
-    for rank, record in enumerate(DATA.split("\\n")):
+    rank = 0
+    for record in DATA.split("|"):
         if not record:
             continue
-        word = ""
-        for character in record:
-            word += LETTER[character]
-        WORDS.append(word)
-        for skeleton, cost in _expand(word, 12):
-            if skeleton not in INDEX:
-                INDEX[skeleton] = []
-            INDEX[skeleton].append((word, cost, rank))
+        if min(record) < "A":
+            # The word holds a letter whose spelling changes, so it has more
+            # than one skeleton.
+            for skeleton, cost in _spellings(record):
+                if skeleton not in INDEX:
+                    INDEX[skeleton] = []
+                INDEX[skeleton].append((record, cost, rank))
+        else:
+            # Every letter of the word keeps its own spelling, so the word
+            # is its own skeleton.
+            if record not in INDEX:
+                INDEX[record] = []
+            INDEX[record].append((record, 0, rank))
+        rank = rank + 1
+
+
+def _decode(record):
+    """The compact code back to Mongolian."""
+    word = ""
+    for character in record:
+        word = word + LETTER[character]
+    return word
 
 
 def _candidates(latin):
     """The words a typed Latin word might mean, best first."""
     parses = _parse(latin, 24)
     if parses:
-        cheapest = min(cost for _, cost in parses)
+        # The parses come back cheapest first, so the first one is the
+        # cheapest and the rest are measured against it.
+        cheapest = parses[0][1]
         parses = [(skeleton, cost - cheapest) for skeleton, cost in parses]
     out = []
     seen = {{}}
     for skeleton, parsecost in parses:
-        for word, wordcost, rank in INDEX.get(skeleton, ()):
-            if word in seen:
+        for record, wordcost, rank in INDEX.get(skeleton, ()):
+            if record in seen:
                 continue
-            seen[word] = True
+            seen[record] = True
             # The frequency term stands in for the corpus probability. It is
             # the rank, so the shape of the distribution is the corpus shape.
             score = 3.0 * parsecost + 3.0 * wordcost + 1.1 * math.log(rank + 1)
-            out.append((score, word))
-    out.sort(key=lambda item: (item[0], item[1]))
+            out.append((score, record))
+    out = sorted(out, key=lambda item: (item[0], item[1]))
     if not out:
         guess = _spell(latin)
         if guess:
-            out.append((0.0, guess))
-    return [word for _, word in out[:4]]
+            return [guess]
+        return []
+    return [_decode(record) for _, record in out[:4]]
 
 
 def _spell(latin):
@@ -302,7 +355,7 @@ def _spell(latin):
     while position < len(latin):
         rule = None
         for candidate in LATIN.get(latin[position], ()):
-            if latin.startswith(candidate[0], position):
+            if latin[position:position + len(candidate[0])] == candidate[0]:
                 rule = candidate[0]
                 break
         if rule is None:
@@ -373,13 +426,17 @@ def on_action(action, value, state):
 
 def _ordinary(word):
     """Words worth rewriting: not a code, not an acronym, not a number."""
-    if not word or not word.isascii():
+    if not word:
         return False
     # The hard sign is written with an apostrophe in Latin Mongolian typing,
     # so a word can carry one in the middle.
     letters = word.replace("'", "")
     if not letters or not letters.isalpha():
         return False
+    for character in letters:
+        # Only Latin letters. Anything else is left alone.
+        if character < "A" or character > "z":
+            return False
     if len(letters) > 1 and letters.isupper():
         return False
     return True

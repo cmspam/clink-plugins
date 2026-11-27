@@ -71,7 +71,16 @@ def main() -> None:
     state["always"] = True
 
     rng = random.Random(arguments.seed)
-    known = set(plugin.WORDS)
+    if hasattr(plugin, "WORDS"):
+        known = set(plugin.WORDS)
+    else:
+        # The plugin keeps its dictionary as a compact code, so the words are
+        # read back out of it.
+        known = set()
+        for record in plugin.DATA.split("|"):
+            if not record:
+                continue
+            known.add("".join(plugin.LETTER[character] for character in record))
     total = correct = 0
     known_total = known_correct = 0
     missed = collections.Counter()
