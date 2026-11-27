@@ -95,6 +95,7 @@ def main() -> None:
     parser.add_argument("--translit", required=True, help="translit.json with the spelling rules")
     parser.add_argument("--out", required=True, help="plugin file to write")
     parser.add_argument("--limit", type=int, default=6000, help="how many words to carry")
+    parser.add_argument("--name", default="Mongolian Latin", help="the name the plugin shows")
     arguments = parser.parse_args()
 
     translit = json.loads(pathlib.Path(arguments.translit).read_text(encoding="utf-8"))
@@ -457,7 +458,7 @@ def correct(word, fix, state):
     return candidates[0]
 '''
 
-    text = HEADER + body + f"\nDATA = (\n{literal}\n)\n"
+    text = HEADER.replace("# name: Mongolian Latin", f"# name: {arguments.name}") + body + f"\nDATA = (\n{literal}\n)\n"
     destination = pathlib.Path(arguments.out)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(text, encoding="utf-8")
