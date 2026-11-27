@@ -129,7 +129,7 @@ def main() -> None:
     chunks, current = [], ""
     for word in counts:
         piece = encode(word[0]) + "\\n"
-        if len(current) + len(piece) > 4000:
+        if len(current) + len(piece) > 1000:
             chunks.append(current)
             current = ""
         current += piece
@@ -349,12 +349,8 @@ def _wanted(state):
 
 
 def initial():
+    _load()
     return {{"on": True, "always": False}}
-
-
-def on_open(state):
-    state["_language"] = setting("language")
-    return state
 
 
 def on_language(code, state):
@@ -404,7 +400,7 @@ def correct(word, fix, state):
     return candidates[0]
 '''
 
-    text = HEADER + body + f"\nDATA = (\n{literal}\n)\n\n_load()\n"
+    text = HEADER + body + f"\nDATA = (\n{literal}\n)\n"
     destination = pathlib.Path(arguments.out)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(text, encoding="utf-8")
