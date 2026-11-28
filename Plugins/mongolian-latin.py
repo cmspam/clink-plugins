@@ -218,8 +218,8 @@ def _candidates(latin):
 def _spell(latin):
     """Writes a word the dictionary does not have.
 
-    The Latin is read rather than the dictionary's spelling space, so ia
-    stays two letters and only ya becomes one letter. The rest comes from
+    The Latin is read rather than the spelling space of the dictionary,
+    so ia stays two letters and only ya becomes one letter. The rest comes from
     the corpus: an i after a vowel is the glide, a visible a is back, a
     visible e makes it front, and with neither it goes back, which is the
     commoner case.

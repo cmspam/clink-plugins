@@ -77,6 +77,8 @@ def check_quotes(text: str) -> None:
         body = text[start + 3:end]
         if '"' in body:
             raise SystemExit("A triple-quoted string holds a quote: " + body[:70])
+        if "'" in body:
+            raise SystemExit("A triple-quoted string holds an apostrophe: " + body[:70])
         position = end + 3
 
 
@@ -382,8 +384,8 @@ def _candidates(latin):
 def _spell(latin):
     """Writes a word the dictionary does not have.
 
-    The Latin is read rather than the dictionary's spelling space, so ia
-    stays two letters and only ya becomes one letter. The rest comes from
+    The Latin is read rather than the spelling space of the dictionary,
+    so ia stays two letters and only ya becomes one letter. The rest comes from
     the corpus: an i after a vowel is the glide, a visible a is back, a
     visible e makes it front, and with neither it goes back, which is the
     commoner case.

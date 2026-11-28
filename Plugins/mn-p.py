@@ -1,7 +1,7 @@
 # ---
-# name: Mongolian Latin Test K
+# name: Mongolian Latin Test P
 # icon: text.badge.checkmark
-# summary: The fallback with a plain English docstring
+# summary: The plugin that installs, with an apostrophe in a docstring
 # version: 1.2
 # author: cmspam
 # ---
@@ -216,60 +216,7 @@ def _candidates(latin):
 
 
 def _spell(latin):
-    """A word the dictionary does not have still gets written in Cyrillic.
-
-    This reads the Latin rather than the dictionary's spelling space, so ia
-    stays two letters and only ya becomes one letter. The remaining guesses come
-    from the corpus: an i after a vowel is the glide, a word with
-    a visible a is back, a visible e makes it front, and with neither it
-    goes back, which is the commoner case.
-    """
-    tail = ""
-    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
-        if len(latin) > len(suffix) and latin.endswith(suffix):
-            tail = cyrillic
-            latin = latin[: len(latin) - len(suffix)]
-            break
-    letters = []
-    position = 0
-    while position < len(latin):
-        rule = None
-        for candidate in LATIN.get(latin[position], ()):
-            if latin[position:position + len(candidate[0])] == candidate[0]:
-                rule = candidate[0]
-                break
-        if rule is None:
-            position += 1
-            continue
-        letters.append(rule)
-        position += len(rule)
-    out = ""
-    for rule in letters:
-        previous = out[-1] if out else ""
-        if rule == "i":
-            out += "й" if previous in VOWELS else "и"
-        elif rule == "y":
-            out += "й" if previous in VOWELS else "ы"
-        elif rule == "o":
-            out += "o"
-        elif rule == "u":
-            out += "u"
-        elif rule == "c":
-            out += "ц"
-        elif rule == "x":
-            out += "ш"
-        else:
-            out += SPELLING.get(rule, "")
-    front = False
-    for character in out:
-        if character == "а":
-            front = False
-            break
-        if character == "э":
-            front = True
-            break
-    out = out.replace("o", "ө" if front else "о").replace("u", "ү" if front else "у")
-    return out + tail
+    return ""
 
 
 def _wanted(state):
@@ -340,6 +287,12 @@ def correct(word, fix, state):
     if not candidates:
         return None
     return candidates[0]
+
+def _note():
+    """Clink's reader ends a triple-quoted string at an apostrophe."""
+    return 0
+
+
 
 DATA = (
     "N6|BA2NA|7M|ENE|Q|BA2GAA|GEJ|L|BOLON|ULS5N|BA2SAN|BOL|IH|NEG|OLON|MONGOL|ON5|H-N|SAR5N|OND|BA2H|BA2DAG|DEER|GESEN|B.G..D|ULS|BOLNO|TER|M.N|TUHA2|HAMGI2N|CAG|BOLSON|-2L|GAZAR|HO9R|TUS|BI|ZASGI2N|T.RI2N|8MAR|BOLOH|TA|BOLJ|BU2|-1D|BA|BID|DAH6|GEDEG|GAZR5N|HARIN|0E|UU|DARGA|SA2N|TALAAR|JILI2N|DARAA|XINE|.MN.|H-NI2|MONGOL5N|AJ|A0Q|ZOHION|ORON|ERH|B-H|A2MGI2N|BU7U|.D.R|HI2J|ARGA|JIL|ZEREG|DUGAAR|DELHI2N|NAR|MANA2|HUUL6|ALBAN|HUULI2N|BIX|T--NI2|AJIL|DEE|BI2|1R.NHI2|HEREGTE2|-R|7U|EDI2N|BUSAD|HU06D|MAX|A0AH|AJL5N|Z-2L|GEH|NER|9STO2|SA8|HI2H|SA2D|BA2J|H-M--S|AJILLAJ|X--|EH|GEED|..RI2N|ODOO|IL--|..R|.ND.R|ER--L|BAGA|HU06|TOM|NEGEN|BAS|I2M|XIG|T.0|BILEE|B-R|GOL|NI2T|MEDEELEL|-NDESNI2|H-RTEL|-NDSEN|B|SANAL|ZARIM|ZASAG|BA20|BUTLUUR|ES0EL|UG|HOT5N|TUHA2N|HEREG|MAXIN|ENEH--|TULD|GER|DAHIN|UDAA|-G|HEDEN|GEHDEE|D|HEMEEN|B-HI2|BUS|DEED|A0SAN|ASUUDAL|HI2SEN|IRSEN|B-REN|.N..D.R|SA2HAN|ARD|MINI2|GIX--N|DUND|ULSAD|BOLOMJTO2|GARU2|BA2DAL|TED|H.R.NG.|DAGUU|NUTGI2N|UUL|AJILLAGAA|BA2LAA|QIN6|UQIR|BI1|-1I2N|-NE|",
