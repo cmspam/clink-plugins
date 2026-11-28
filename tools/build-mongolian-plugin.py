@@ -142,7 +142,7 @@ def main() -> None:
         current += piece
     if current:
         chunks.append(current)
-    literal = "\n".join(f'    """{chunk}""",' for chunk in chunks)
+    literal = "\n".join(f'    "{chunk}",' for chunk in chunks)
 
     # The tables the plugin carries, keyed by the code character.
     letter_table = {code[letter]: letter for letter in CYR}
@@ -169,8 +169,6 @@ def main() -> None:
     latin.append(("'", "I", 3))
 
     body = f'''
-import math
-
 CYR = "{CYR}"
 LETTER = {letter_table!r}
 
@@ -205,6 +203,28 @@ SPELLING = {{"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
 INDEX = {{}}
 
 
+def _log(value):
+    """The natural logarithm, without the math module.
+
+    The logarithm of a number near one is twice the arctangent series, and
+    halving the number until it is near one keeps the series short.
+    """
+    count = 0
+    while value > 2:
+        value = value / 2
+        count = count + 1
+    ratio = (value - 1) / (value + 1)
+    square = ratio * ratio
+    total = ratio
+    term = ratio
+    power = 3
+    while power < 25:
+        term = term * square
+        total = total + term / power
+        power = power + 2
+    return 2 * total + count * 0.693147180559945
+
+
 def _spellings(record):
     """Every spelling of one word, cheapest first.
 
@@ -233,7 +253,7 @@ def _spellings(record):
         grown = []
         for base, cost in out:
             for piece, extra in options:
-                copy = base.copy()
+                copy = list(base)
                 copy[position] = piece
                 grown.append((copy, cost + extra))
         out = grown
@@ -326,7 +346,7 @@ def _candidates(latin):
             seen[record] = True
             # The frequency term stands in for the corpus probability. It is
             # the rank, so the shape of the distribution is the corpus shape.
-            score = 3.0 * parsecost + 3.0 * wordcost + 1.1 * math.log(rank + 1)
+            score = 3.0 * parsecost + 3.0 * wordcost + 1.1 * _log(rank + 1)
             out.append((score, record))
     out = sorted(out, key=lambda item: (item[0], item[1]))
     if not out:

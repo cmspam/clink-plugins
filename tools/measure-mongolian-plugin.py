@@ -77,7 +77,10 @@ def main() -> None:
         # The plugin keeps its dictionary as a compact code, so the words are
         # read back out of it.
         known = set()
-        for record in plugin.DATA.split("|"):
+        data = plugin.DATA
+        if not isinstance(data, str):
+            data = "".join(data)
+        for record in data.split("|"):
             if not record:
                 continue
             known.add("".join(plugin.LETTER[character] for character in record))
