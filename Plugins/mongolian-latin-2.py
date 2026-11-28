@@ -1,5 +1,5 @@
 # ---
-# name: Mongolian Latin 2
+# name: Mongolian Latin
 # icon: text.badge.checkmark
 # summary: Type Mongolian in Latin letters and get Cyrillic
 # version: 1.1
