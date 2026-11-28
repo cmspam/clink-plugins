@@ -31,7 +31,7 @@ HEADER = '''# ---
 # name: Mongolian Latin
 # icon: text.badge.checkmark
 # summary: Type Mongolian in Latin letters and get Cyrillic
-# version: 1.1
+# version: 1.2
 # author: cmspam
 # ---
 
@@ -56,6 +56,28 @@ HEADER = '''# ---
 # It only writes Mongolian. Switch it off from the plugin's own settings, or
 # leave the language alone and it stays out of the way.
 '''
+
+
+def check_quotes(text: str) -> None:
+    """No quote character inside a triple-quoted string.
+
+    Clink reads a triple-quoted string as ending at the first quote inside
+    it, so a docstring that quotes a word leaves the rest of the file as
+    rubbish and the app refuses the plugin. The words are named without
+    quotes instead.
+    """
+    position = 0
+    while True:
+        start = text.find('"""', position)
+        if start < 0:
+            return
+        end = text.find('"""', start + 3)
+        if end < 0:
+            raise SystemExit("A triple-quoted string was never closed.")
+        body = text[start + 3:end]
+        if '"' in body:
+            raise SystemExit("A triple-quoted string holds a quote: " + body[:70])
+        position = end + 3
 
 
 def build_tables(translit: dict):
@@ -360,8 +382,8 @@ def _candidates(latin):
 def _spell(latin):
     """A word the dictionary does not have still gets written in Cyrillic.
 
-    This reads the Latin rather than the dictionary's spelling space, so "ia"
-    stays two letters and only "ya" becomes я. The remaining guesses come
+    This reads the Latin rather than the dictionary's spelling space, so ia
+    stays two letters and only ya becomes я. The remaining guesses come
     from the corpus: an и straight after a vowel is the glide й, a word with
     a visible а is back, a visible э makes it front, and with neither it
     goes back, which is the commoner case.
@@ -433,11 +455,6 @@ def initial():
     return {{"on": True, "always": False}}
 
 
-def on_open(state):
-    _ready()
-    return state
-
-
 def on_language(code, state):
     state["_language"] = code
     return state
@@ -490,6 +507,7 @@ def correct(word, fix, state):
 '''
 
     text = HEADER.replace("# name: Mongolian Latin", f"# name: {arguments.name}") + body + f"\nDATA = (\n{literal}\n)\n"
+    check_quotes(text)
     destination = pathlib.Path(arguments.out)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(text, encoding="utf-8")

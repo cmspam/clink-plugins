@@ -1,80 +1,37 @@
 # ---
-# name: Mongolian Latin Probe 3
+# name: Mongolian Latin
 # icon: text.badge.checkmark
 # summary: Type Mongolian in Latin letters and get Cyrillic
-# version: 1.1
+# version: 1.2
 # author: cmspam
 # ---
 
-# Suggestions and corrections of your own.
+# Writes Mongolian in Cyrillic while you type Latin letters.
 #
-# suggestions(word, state) runs as you type and returns words for the bar,
-# ahead of the keyboard's own. word is the one being typed, empty between
-# words; context() has the text around it.
+# Mongolian Cyrillic has letters Latin cannot express: the front rounded
+# vowels ө and ү, the palatal series, and a soft sign that is usually left
+# off the end of a word. So the conversion cannot be a fixed letter table.
+# What it does instead:
 #
-# correct(word, fix, state) runs when space ends a word. fix is what the
-# keyboard was about to change it to, or None. Return a word to commit that
-# instead, False to leave the word exactly as typed, or None to let the
-# keyboard decide. Backspace right after still undoes it, like any
-# autocorrect.
+#   * every Mongolian word is expanded into the spellings a typist might
+#     use for it, so "ch" reaches ч, "shch" reaches щ and "u" can reach
+#     either у or ү;
+#   * the Latin you type is parsed the other way, into the same set of
+#     spellings;
+#   * the dictionary decides which word was meant, and its own frequency
+#     breaks the remaining ties.
 #
-# Shorthand offers the expansion of a few abbreviations while you type them,
-# expands them on space if you want, and keeps autocorrect off words in capitals
-# and words with digits in them.
-SHORT = {
-    "brb": "be right back",
-    "omw": "on my way",
-    "idk": "I don't know",
-    "tbh": "to be honest",
-    "afaik": "as far as I know",
-    "imo": "in my opinion",
-}
-
-def initial():
-    return {"expand": False, "guard": True}
-
-def settings(state):
-    return section("text.corrections", [
-        toggle("Expand shorthand on space", state["expand"], action="expand"),
-        toggle("Leave capitals and numbers alone", state["guard"], action="guard"),
-    ], title="Shorthand")
-
-def on_action(action, value, state):
-    if action in ("expand", "guard"):
-        state[action] = value
-    return state
-
-def suggestions(word, state):
-    long = SHORT.get(word.lower())
-    return [long] if long else []
-
-def correct(word, fix, state):
-    long = SHORT.get(word.lower())
-    if long and state["expand"]:
-        return long
-    if state["guard"]:
-        if len(word) > 1 and word.isupper():
-            return False
-        if any(c.isdigit() for c in word):
-            return False
-    return None
+# The rules come from the maral keyboard project, which measured this
+# spelling system over a 275 million token Mongolian corpus.
+#
+# It only writes Mongolian. Switch it off from the plugin's own settings, or
+# leave the language alone and it stays out of the way.
 
 CYR = "абвгдежзийклмнопрстуфхцчшщъыьэюяёүө"
 LETTER = {'A': 'а', 'B': 'б', '0': 'в', 'G': 'г', 'D': 'д', '1': 'е', 'J': 'ж', 'Z': 'з', 'I': 'и', '2': 'й', 'K': 'к', 'L': 'л', 'M': 'м', 'N': 'н', 'O': 'о', 'P': 'п', 'R': 'р', 'S': 'с', 'T': 'т', 'U': 'у', 'F': 'ф', 'H': 'х', 'C': 'ц', 'Q': 'ч', 'X': 'ш', '3': 'щ', '4': 'ъ', '5': 'ы', '6': 'ь', 'E': 'э', '7': 'ю', '8': 'я', '9': 'ё', '-': 'ү', '.': 'ө'}
 
 # The other spellings of the letters whose spelling changes, and the change
 # that happens after a vowel.
-VOWEL_CODES = "-.15789AEIOU"
-VOWELS = "аеиоуыэюяёүө"
-
-
-SPELLING = {"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
-             "g": "г", "h": "х", "j": "ж", "k": "к", "kh": "х", "l": "л",
-             "m": "м", "n": "н", "p": "п", "q": "ч", "r": "р", "s": "с",
-             "sh": "ш", "shch": "щ", "t": "т", "ts": "ц", "v": "в", "w": "в",
-             "ya": "я", "ye": "э", "yo": "ё", "yu": "ю", "z": "з", "zh": "ж",
-             "'": "ъ"}
-
 ALTS = {'0': [('V', 0), ('W', 2)], '1': [('E', 0), ('IE', 1)], '2': [('I', 0)], '3': [('X', 0), ('XQ', 1)], '4': [('', 1), ('I', 0)], '5': [('I', 3), ('II', 0), ('Y', 0)], '6': [('', 1), ('I', 0)], '7': [('IU', 0)], '8': [('IA', 0)], '9': [('IO', 0)], '-': [('O', 2), ('U', 0)], '.': [('O', 0), ('U', 1)]}
 AFTER = {'2': [('I', 0), ('Y', 0)]}
 VOWEL_CODES = "-.15789AEIOU"
@@ -94,6 +51,295 @@ def _latin_rules(rules):
 LATIN = _latin_rules([('yu', 'IU', 0), ('yo', 'IO', 0), ('ye', 'IE', 0), ('ya', 'IA', 0), ('shch', 'X', 0), ('ch', 'Q', 0), ('sh', 'X', 0), ('ts', 'C', 0), ('kh', 'H', 0), ('zh', 'J', 0), ('a', 'A', 0), ('b', 'B', 0), ('v', 'V', 0), ('g', 'G', 0), ('d', 'D', 0), ('e', 'E', 0), ('j', 'J', 0), ('z', 'Z', 0), ('i', 'I', 0), ('k', 'K', 0), ('l', 'L', 0), ('m', 'M', 0), ('n', 'N', 0), ('o', 'O', 0), ('p', 'P', 0), ('r', 'R', 0), ('s', 'S', 0), ('t', 'T', 0), ('u', 'U', 0), ('f', 'F', 0), ('h', 'H', 0), ('q', 'Q', 0), ('x', 'X', 0), ('c', 'C', 0), ('x', 'H', 3), ('c', 'K', 3), ('c', 'S', 4), ('w', 'V', 2), ('y', 'Y', 0), ('y', 'I', 2), ("'", 'I', 3)])
 
 # The spelling of every Latin rule that has only one answer.
+SPELLING = {"a": "а", "b": "б", "ch": "ч", "d": "д", "e": "э", "f": "ф",
+             "g": "г", "h": "х", "j": "ж", "k": "к", "kh": "х", "l": "л",
+             "m": "м", "n": "н", "p": "п", "q": "ч", "r": "р", "s": "с",
+             "sh": "ш", "shch": "щ", "t": "т", "ts": "ц", "v": "в", "w": "в",
+             "ya": "я", "ye": "э", "yo": "ё", "yu": "ю", "z": "з", "zh": "ж",
+             "'": "ъ"}
+
+INDEX = {}
+
+
+def _log(value):
+    """The natural logarithm, without the math module.
+
+    The logarithm of a number near one is twice the arctangent series, and
+    halving the number until it is near one keeps the series short.
+    """
+    count = 0
+    while value > 2:
+        value = value / 2
+        count = count + 1
+    ratio = (value - 1) / (value + 1)
+    square = ratio * ratio
+    total = ratio
+    term = ratio
+    power = 3
+    while power < 25:
+        term = term * square
+        total = total + term / power
+        power = power + 2
+    return 2 * total + count * 0.693147180559945
+
+
+def _spellings(record):
+    """Every spelling of one word, cheapest first.
+
+    A word is spelled by choosing one piece for each letter, and only the
+    letters that can be spelled more than one way have a choice to make. The
+    pieces are copied rather than rebuilt, so a word with a few loose letters
+    stays cheap.
+    """
+    pieces = []
+    spots = []
+    previous = ""
+    for character in record:
+        if character < "A":
+            # A letter whose spelling changes.
+            options = ALTS[character]
+            if previous in VOWEL_CODES and character in AFTER:
+                options = AFTER[character]
+            pieces.append(options[0][0])
+            if len(options) > 1:
+                spots.append((len(pieces) - 1, options))
+        else:
+            pieces.append(character)
+        previous = character
+    out = [(pieces, 0)]
+    for position, options in spots:
+        grown = []
+        for base, cost in out:
+            for piece, extra in options:
+                copy = list(base)
+                copy[position] = piece
+                grown.append((copy, cost + extra))
+        out = grown
+    spellings = []
+    for base, cost in out:
+        spellings.append(("".join(base), cost))
+    return spellings
+
+
+def _parse(latin, beam):
+    """Typed Latin to the spellings it might mean, cheapest first."""
+    length = len(latin)
+    paths = [{} for _ in range(length + 1)]
+    paths[0][""] = 0
+    for position in range(length):
+        if not paths[position]:
+            continue
+        current = []
+        for key in paths[position].keys():
+            current.append((paths[position][key], key))
+        current = sorted(current)[:beam]
+        rules = LATIN.get(latin[position], [])
+        if not rules:
+            for cost, seen in current:
+                key = seen + latin[position]
+                if key not in paths[position + 1] or paths[position + 1][key] > cost:
+                    paths[position + 1][key] = cost
+            continue
+        for rule, skeleton, rulecost in rules:
+            if latin[position:position + len(rule)] != rule:
+                continue
+            target = position + len(rule)
+            for cost, seen in current:
+                key = seen + skeleton
+                value = cost + rulecost + 1
+                if key not in paths[target] or paths[target][key] > value:
+                    paths[target][key] = value
+    out = []
+    for key in paths[length].keys():
+        out.append((key, paths[length][key]))
+    out = sorted(out, key=lambda item: (item[1], len(item[0]), item[0]))
+    return out[:beam]
+
+
+def _load():
+    """Build the index: each word under every spelling that reaches it."""
+    rank = 0
+    for record in "".join(DATA).split("|"):
+        if not record:
+            continue
+        if min(record) < "A":
+            # The word holds a letter whose spelling changes, so it has more
+            # than one skeleton.
+            for skeleton, cost in _spellings(record):
+                if skeleton not in INDEX:
+                    INDEX[skeleton] = []
+                INDEX[skeleton].append((record, cost, rank))
+        else:
+            # Every letter of the word keeps its own spelling, so the word
+            # is its own skeleton.
+            if record not in INDEX:
+                INDEX[record] = []
+            INDEX[record].append((record, 0, rank))
+        rank = rank + 1
+
+
+def _decode(record):
+    """The compact code back to Mongolian."""
+    word = ""
+    for character in record:
+        word = word + LETTER[character]
+    return word
+
+
+def _candidates(latin):
+    """The words a typed Latin word might mean, best first."""
+    _ready()
+    parses = _parse(latin, 24)
+    if parses:
+        # The parses come back cheapest first, so the first one is the
+        # cheapest and the rest are measured against it.
+        cheapest = parses[0][1]
+        parses = [(skeleton, cost - cheapest) for skeleton, cost in parses]
+    out = []
+    seen = {}
+    for skeleton, parsecost in parses:
+        for record, wordcost, rank in INDEX.get(skeleton, ()):
+            if record in seen:
+                continue
+            seen[record] = True
+            # The frequency term stands in for the corpus probability. It is
+            # the rank, so the shape of the distribution is the corpus shape.
+            score = 3.0 * parsecost + 3.0 * wordcost + 1.1 * _log(rank + 1)
+            out.append((score, record))
+    out = sorted(out, key=lambda item: (item[0], item[1]))
+    if not out:
+        guess = _spell(latin)
+        if guess:
+            return [guess]
+        return []
+    return [_decode(record) for _, record in out[:4]]
+
+
+def _spell(latin):
+    """A word the dictionary does not have still gets written in Cyrillic.
+
+    This reads the Latin rather than the dictionary's spelling space, so ia
+    stays two letters and only ya becomes я. The remaining guesses come
+    from the corpus: an и straight after a vowel is the glide й, a word with
+    a visible а is back, a visible э makes it front, and with neither it
+    goes back, which is the commoner case.
+    """
+    tail = ""
+    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
+        if len(latin) > len(suffix) and latin.endswith(suffix):
+            tail = cyrillic
+            latin = latin[: len(latin) - len(suffix)]
+            break
+    letters = []
+    position = 0
+    while position < len(latin):
+        rule = None
+        for candidate in LATIN.get(latin[position], ()):
+            if latin[position:position + len(candidate[0])] == candidate[0]:
+                rule = candidate[0]
+                break
+        if rule is None:
+            position += 1
+            continue
+        letters.append(rule)
+        position += len(rule)
+    out = ""
+    for rule in letters:
+        previous = out[-1] if out else ""
+        if rule == "i":
+            out += "й" if previous in VOWELS else "и"
+        elif rule == "y":
+            out += "й" if previous in VOWELS else "ы"
+        elif rule == "o":
+            out += "o"
+        elif rule == "u":
+            out += "u"
+        elif rule == "c":
+            out += "ц"
+        elif rule == "x":
+            out += "ш"
+        else:
+            out += SPELLING.get(rule, "")
+    front = False
+    for character in out:
+        if character == "а":
+            front = False
+            break
+        if character == "э":
+            front = True
+            break
+    out = out.replace("o", "ө" if front else "о").replace("u", "ү" if front else "у")
+    return out + tail
+
+
+def _wanted(state):
+    if not state.get("on", True):
+        return False
+    if state.get("always"):
+        return True
+    code = state.get("_language") or setting("language") or ""
+    return code.startswith("mn")
+
+
+def _ready():
+    """Build the index the first time it is needed."""
+    if not INDEX:
+        _load()
+
+
+def initial():
+    return {"on": True, "always": False}
+
+
+def on_language(code, state):
+    state["_language"] = code
+    return state
+
+
+def settings(state):
+    return section("text.corrections", [
+        toggle("Write Mongolian in Cyrillic", state["on"], action="on"),
+        toggle("Convert in every language", state["always"], action="always"),
+    ], title="Mongolian Latin")
+
+
+def on_action(action, value, state):
+    if action in ("on", "always"):
+        state[action] = value
+    return state
+
+
+def _ordinary(word):
+    """Words worth rewriting: not a code, not an acronym, not a number."""
+    if not word:
+        return False
+    # The hard sign is written with an apostrophe in Latin Mongolian typing,
+    # so a word can carry one in the middle.
+    letters = word.replace("'", "")
+    if not letters or not letters.isalpha():
+        return False
+    for character in letters:
+        # Only Latin letters. Anything else is left alone.
+        if character < "A" or character > "z":
+            return False
+    if len(letters) > 1 and letters.isupper():
+        return False
+    return True
+
+
+def suggestions(word, state):
+    if not _ordinary(word) or not _wanted(state):
+        return []
+    return _candidates(word.lower())
+
+
+def correct(word, fix, state):
+    if not _ordinary(word) or not _wanted(state):
+        return None
+    candidates = _candidates(word.lower())
+    if not candidates:
+        return None
+    return candidates[0]
 
 DATA = (
     "N6|BA2NA|7M|ENE|Q|BA2GAA|GEJ|L|BOLON|ULS5N|BA2SAN|BOL|IH|NEG|OLON|MONGOL|ON5|H-N|SAR5N|OND|BA2H|BA2DAG|DEER|GESEN|B.G..D|ULS|BOLNO|TER|M.N|TUHA2|HAMGI2N|CAG|BOLSON|-2L|GAZAR|HO9R|TUS|BI|ZASGI2N|T.RI2N|8MAR|BOLOH|TA|BOLJ|BU2|-1D|BA|BID|DAH6|GEDEG|GAZR5N|HARIN|0E|UU|DARGA|SA2N|TALAAR|JILI2N|DARAA|XINE|.MN.|H-NI2|MONGOL5N|AJ|A0Q|ZOHION|ORON|ERH|B-H|A2MGI2N|BU7U|.D.R|HI2J|ARGA|JIL|ZEREG|DUGAAR|DELHI2N|NAR|MANA2|HUUL6|ALBAN|HUULI2N|BIX|T--NI2|AJIL|DEE|BI2|1R.NHI2|HEREGTE2|-R|7U|EDI2N|BUSAD|HU06D|MAX|A0AH|AJL5N|Z-2L|GEH|NER|9STO2|SA8|HI2H|SA2D|BA2J|H-M--S|AJILLAJ|X--|EH|GEED|..RI2N|ODOO|IL--|..R|.ND.R|ER--L|BAGA|HU06|TOM|NEGEN|BAS|I2M|XIG|T.0|BILEE|B-R|GOL|NI2T|MEDEELEL|-NDESNI2|H-RTEL|-NDSEN|B|SANAL|ZARIM|ZASAG|BA20|BUTLUUR|ES0EL|UG|HOT5N|TUHA2N|HEREG|MAXIN|ENEH--|TULD|GER|DAHIN|UDAA|-G|HEDEN|GEHDEE|D|HEMEEN|B-HI2|BUS|DEED|A0SAN|ASUUDAL|HI2SEN|IRSEN|B-REN|.N..D.R|SA2HAN|ARD|MINI2|GIX--N|DUND|ULSAD|BOLOMJTO2|GARU2|BA2DAL|TED|H.R.NG.|DAGUU|NUTGI2N|UUL|AJILLAGAA|BA2LAA|QIN6|UQIR|BI1|-1I2N|-NE|",
@@ -130,10 +376,5 @@ DATA = (
     "H8TADAAS|HA0TGA2|80LAA|.D.RL.G|TATDAG|--N|BAGANUUR|KOF1|Z-2LEES|SED0I2N|DUGU2N|ALH|XUUGIAN|SONIND|HEREGJILT|DE0XIJ|ZARLIGAAR|M.RD.J|B-D--N|MEDEELELD|ERDEMTDI2N|TARAAH|DAH|BARIMTAT|XAARDSAN|BI1DEE|BA2GUULAGDSAN5|HERGEES|O2LGOLT5G|ZAMBARAAG-2|COHILT|ERTNEES|GAMXGAAS|AAJMAAR|ED-GEE|NI2TTE2|RA2ON|B-TEEGDEH--NEE|B.MB.L.G|UULZSAN|DOLLAR5G|HELBERT|HARAAHAN|BA2SN5|TARIH|TO0QOO|ZAHIRL5N|Z.RQLI2G|B-RTGEH|ZOR6SON|T.S0I2G|8LJ|BANKUUD|GEHEES|NEMEGDENE|AJILLALAA|T.R.LHT.N|ARGUUD|TOGLOLTOO|BIQLEGI2N|BUDAG|TAR6J|HALBAGA|Z-2LSI2N|JILI2G|ZARCUULJ|HEDI2NE|TOKIO|MANDAL|Z.0X..RLI2N|NI2GEMLEG|H.NG.L.LT|URIALJ|CACRAG|IREEG-2|DUURI2N|M1DALI2N|M8GMAR|Z.0X..R.H|H8ZGAARG-2|QONO|BAGTAASAN|A0TOBUSN5|CALINGI2N|BOLSN5|TODORHO2LDOG|IRAN5|ZO0J|H-SELTEER|HELELCEED|GEDGEEREE|TEDNEES|SETG--LQDI2N|DAXRAMD|TUULJ|DUGAARTA2|TOMILSON|.RS.LD.GQ|BARJEE|T.R--LJ|EMI2G|DA2RQ|DEG|.DR--D|DURSAMJ|ORUULDAG|ASUUH|B-REES|HA|.TG.N|8RILCAH|HARIUD|.RT.J|A0TOMATAAR|AXIGLANA|NOOS|ALHAJ|NEGDEN|.G--LSEN|IREHEER|SETG--LQID|XAARDLAGAD|",
     "BAKALA0R5N|B-RTGELD|SURGAJ|R--GEE|.ND.G|.G|KONUSNA8|HARCAGA|AKAD1MI|ILREL|OROOG-2|DARAAQI2N|BOL11|G-2J|DA0TAN|SERGEEGDEH|G-2CETGELI2N|H-REEG|PROIZ0ODST0A|P1SKA|AMJILTAND|TEGEHED|1R.NHI2L.GQID|ORUULAAD|MAT1MATIK|AXIGLALT|-2LQILDEG|BOHIRDL5N|OLN5G|UDIRDSAN|HUUDSAND|HELELCSEN|HENI2G|S-LD|H.N..S.N|PRAKTIK|MAN6|DUTAGDAL|KAR61R|HOROOLOLD|E0LELI2N|H-SEN|XIREE|NI2L--LJ|-Z|EELJI2N|HAR6|BOLO0SROL5G|TAHL5N|BURHN5|HEREGSEHG-2|TO2ROND|MEDEGDEH|S.RG..R|OLBORLOLT5N|DA2QIN|B-TECTE2|S--N|EDLEL|NI2TI2G|Z.0X..R.GDS.N|..R..S..|QIGLELI2G|FE2SB--K|MEDLEGI2G|ZANDANXATAR|GEDES|NA2RSAG|BAGAAS|.R..NI2|80AGDDAG|S--LDEE|-SEE|MEDEELJEE|NE0TR--LJ|-ZJEE|XUUDAN|ETOGO|ARG5N|HA2RCAG|KOTOR51|H-RTEH|ZOHIOGQ|QIH|XIGXEED|TENC--|TES0ERTE2|ATLAA|KAZAHSTAN|DADAL|ISPOL6ZU1TS8|X--HEER|HARIUG|SA2TAD|URAGX|8MARQ|-NELGEEG|SELBEG|TAARQ|KAM1R|A8LL5N|GARDAN|BUT|MANSUURUULAH|AM6DRAL5NHAA|SUUNA|BAR|UULARHAG|QUULGAND|SO9LTO2|NEGDLI2N|H-NN-|--SEL|SETGELEER|DUULSAN|ZA2LUULAH|GEHEESEE|-GEND|ISLAM5N|HU06CAAG|T.L..LJ|HALAMJ|NIMGEN|QINEE|",
     "NULIMS|IHI2G|H-SNEGT|XALGARUULALT|H.L..|UDARNA8|HEREGLEHED|BELTGEN|STANDARTAD|TOGT0ORG-2|FA2L|BOLOMJIT|.S.N|H-QIRHI2LEL|JUULQLAL|BELDEJ|GARTAA|DROBIL6NOGO|.G--LEL|NEMREE|HIQEEDEG|HELTSEES|BOLOR|KLI1NTO0|XILJSEN|8SN5|DUUDAJ|B-RD--LSEN|NOGDOL|.0D.H|HAXIJ|SALJ|KAQ1ST01|STROIT1L6N5H|TANIULAH|EMQID|DAHIJ|HUUR|POLNOST67|ERGEH|TUSGAARLAH|STROIT1L6NO2|SALAH|NERLEH|.NG..R|DUTAGDALTA2|HEREGLEEND|HEREGJ--LEHEER|ISHOD8|ALBAN5HAN|BUCAH|DE0X--LJ|SR1DNIH|XANHA1|FORMIRO0ANI8|05SOKIH|AGR1GATO0|DEM|AMJILTAD|AGLOM1RACII|QINGISI2N|KLUB5N|.G..G-2|DAGA0AR|HI20EL|KONSUL5N|OSNO0NOGO|S1RI2|MOD1L12|NIZKIH|RAZRABOTALI|KOLLOKACI2|OT01QA7T|POTR1BNOST8M|TONNAJ12|BOLO0SRUULALT|HA2RLAH|TETGEMJ|CERGI2G|JINGI2N|-RE0SEL|UQIRSAN|HURLAAS|A0ALT5N|B-RD--LDEG|DUGAAR5N|HURALDAAN5G|ARL5N|HOXIN|.NG.T|SU0ILAGQ|CE0ERLEJ|T.R--LSEN|ONCOLSON|HEMJEENEES|DALAN|0ANGI2N|SANAAQILGA|CE0ERHEN|TA2LBARLASAN|.N..DR..S|ULAMJLALTA2|DE0TER|HELBERI2G|NOMOND|ARHAG|8LSAN|HOLBOSON|APPARAT|JORJ|N-CGEN|-LDEEH|AND|IDEE|H-NDI2G|ORUULAN|NEMEED|BATALLAA|",
-    "IDSEN|BOSLOGO|HAGAST|061TNAM|TUXAAL5G|GAR0AL|SUDLAAQD5N|KORPORACI|OLIMPOD|NEMSEN|ETGEEDED|AJILLAHAD|XILJILT|BN|ORUULAGQ|TAS|OLDOHG-2|H-NDETGELI2N|KOLL1J|H--HDI2NHEE|G-2CETGENE|UULZALT5G|-HLI2N|HAMGAALALTTA2|GARDUULAH|TOLGO2D|EGEL|7|HU0ILBAR5G|ERGELTI2N|BARILDAAND|DAANQ|IL--DEL|HOXUUQ|0AXINGTON|HANIAD|Z.GI2N|HURDACTA2|T.RHI2G|SA0AND|NAM5G|HARILCAATA2|GARGAHG-2|MARK|IR|HEMJIH|UNADAG|G-2CETGEL|8LGAAG-2|HAMRUULAH|SANAMSARG-2|CAHIMAAR|SER--N|ORQING|A0AHDAA|BAL|CALINTA2|BOLGOND|H8ZGAARLAH|XATR5N|TURXIJ|MARTAJ|NEGTGESEN|BUCALTG-2|FORUM|ILGEEJ|EEJI2N|N.L..G..R|G1RMAND|O7UTNUUD5N|BUSADTA2|ERQ--DI2N|TANILCSAN|HARNA|N--RSI2G|H-SEHG-2|ILERDEG|HOL5N|G-NJ|QADJEE|T-MNI2G|AMRAH|B-RTG--LSEN|AMT|NOMOO|TOGTNOL5N|XINJEEQ|A0A0|HU06DAA|BI1TE2|ZA0|ELSELTI2N|TUSGAJ|B-HELDEE|METQILEN|TA0ANTOLGO2N|ESERG--CEL|HANDUULJ|A8LAH|MANAN|DA2SAN|UQRUULJ|B-RDDEG|CE0ERLEGEE|TERI2G|MAXIND|HOOLOO|BOROON5|MINI|CE0RI2N|ARHI05N|QADSANG-2|BOLQIHOOD|-Z61|ZAHIALGAAR|HANGAHAD|BLOK|HELTE2|HE0TEJ|JIXEETE2|.S.LTI2N|SERGELEN|HI2C|",
-    "TUULAH|SETGELGEE|SANAAGAA|TASGI2N|DORNO|--REGT|ULST.RI2N|BERH|TAN6J|H--HD--DEE|N--REE|GIX--DED|H-RELS-HI2N|D-NGEE|HOOLO2G|HAMAR|AJILLAAD|J-DO|SUDAR|SERGEEJ|ZAHIRLAAR|URSGAL5N|-ZEGQDI2N|KAPITAL|TULGAMDAJ|HURAALT|UUGAN|DONAL6D|ZEELEE|SAUD5N|-SGI2N|BODLOOR|TODRUULAH|8LALT5N|HARUUL|OQIHOD|AR0IN|BA2GUULALTTA2|TU8A|HAJUU|BARIMTLAN|T.RQ|.G0.L|Z.0L.G..N|NEGJ--D|BI1NEE|HA8GDL5N|GR1K|HI2DI2N|BU2GAAR|MALGA2|Q.L..G|.0QN..R|H.NDI2N|HUDAG|TAG|80UULAHAD|DEEL|T1ATRT|H-NEER|TALARHAJ|-HEH|TBB|HOSUUD|H-SLEE|NEGEER|A0GA2|DOTOODDOO|BOLGOOMJTO2|SUDALSAN|I0EEN|BIT--|DEERHI|-DEES|.G.H..R|AM6TD5N|H-RTEEMJTE2|HESG--D|HAAGQI2N|A2LQLAL5N|.SG.H|AJILQIN|HUULBAR|ZANXIL|URSGAL5G|9S5G|ATOM5N|SONGOLTTO2|N-DEER|SITI|H-QIND|HO2Q|B-RDEH|.DR..R|ADAL|GAJ|OLDOG|HUURQ|BATBA8R|-ZLEE|-SNI2|OLOOD|TULAAN5|8LGAH|-2LI2N|ERDENI2N|ZEELEER|QADLAA|ZOGSSON|Z-2L--D|DUGAAR5G|HOXO2|JIMSNI2|10RO|CEEJ|-RGELJILNE|SA2JIRQ|HOHIRL5G|N.L..G|HELMEER|HELTEST|ZARLAN|AGUULAH|MEDEELEH|-1EREE|T.RJEE|ZAMDAA|Z.0L.MJI2G|H-QINTE2|KOMPANIUDAD|8MARTA2|",
-    "-Z--LELTTE2|H.LI2N|NARAA|HORIGLOH|EDELJ|SPORTOOR|HELELCENE|ZOHIOL5G|TI2XEE|NOGOON5|H-RELBAATAR|MARK1TING|S1KS|H..J|SINGAPUR|-LDEEJ|ATG|T.L.0L.G..TE2|GAZRUUD5N|NEGTGEH|TOSGON5|A2MXIGT|AA05N|HAD|MAHN|BA2LGAJ|M.NHBAT|OHINOO|DELG--RT|DAGALDAH|AMARQ|JARGALANT|ZARCUULDAG|HE|HELELCEERI2N|BA2GAL6D|NA2RUULG5N|X--MJLEL|HANGADAG|HERLEN|IR--LEH|BOLGOH5G|JIND|BRAZIL|SONGOGQD5N|-ZESGELENGI2N|ZOGSOOL|NO9D|N--J|DRAM5N|M.QID|URT5N|NE0TERHI2|GARIGI2N|TOLGO2GOO|DAAJ|HI2HI2N|GARAGI2N|NARI20QLAN|TEMDEGTI2N|TO2RSON|H8NALT5G|BODLOGOOR|URILGAAR|ASUUHAD|Z.0X..R.LG-2|B-HNEE|ENHT-0XIN|0ANT|0AKCIN|URGADAG|-HEL|.MS.H|OHID5N|ZORILGOO|ONLA2NAAR|H..N|HOTUUD5N|HER--L|ILR--LSEN|AMARG-2|Z.0L.LD.H|EMEGTE2N|GAMXIG|MEDEED|KORONA0IRUSNI2|GIX--NI2G|HORIOTO2|.RG.J--LEH|EL1M1NT|MANLA2|XAHAJ|XTAB5N|DAGUUL5N|ORQMOOR|N.L..L.L|TOHIRUULAH|ZOHICUULJ|H-M--SEE|S.-L|N1FTI2N|SANH--JILTI2G|SANDAL|BARIL|TOGOOQ|AUGAA|ERGI2N|BA2RLALTA2|XAR5N|SANAGDANA|SUULGAJ|10ROPT|DALA2D|BA8JMAL|MEDLEE|TEDENTE2|DURSGALT|.S0.RI2N|FIZIKI2N|ANGI2G|GA068A|",
-    "AHIC|UHAJ|EMQILGEEND|Z-2Q|X--S|TOOCNO|URLAGT|SUUDALTA2|UTSAA|M.Q|BULQIN|ERHLEGQDI2N|JIQ|BAR6DAG|OROLCOGQD5N|H--HELDE2N|HUULIND|BAGAHAN|AGUULG5G|UULZA0|NI2L--LEGQID|DARHLAA|HADGALAGDAJ|B-JIG|ESREGEEREE|HEHE|XAARDAH|IDER|TAMIR5N|NUUC5G|AAN|ZALUUS5G|.LGI2|NAMTAR|XIREEND|SODON|HAR6CAH|AMJAAG-2|ADILG-2|TAT0ARAAS|ZOGSOH|QADL5G|T.0XIND|BA2GUULAMJI2G|S1RG12|NANDIN|UGSRALT5N|T.LB.R..|KOMPANIAS|H.D.LJ|ODOOG|BA2GUULLAGUUDTA2|NEGNI2G|S--NI2|NISEHI2N|GARAAGAA|PARIS|DOMOGT|HULGANA|HURAAH|TALBAR|GARAAN5|BA8LGI2G|ALDAGDSAN|GEREESEE|N1|SONGUULI2G|MEDEELE0|GR1KI2N|BOLOO|HUN|ASUUSAN|MONGOLQUUD5G|.NGI2G|HONGOR|ALTANHU8G|ALDARXSAN|ZARLALAA|ONGOCOOR|BA2RTA2|N67|BA2MAAR|MARGAAN5G|ELSSEN|.MS.J|NOMIN|ULST.RQID|HODOOD|ZHU|HIMI|HEMNEH|-2LI2G|7UNAAS|D-RSLEH|XINJEEQID|AHIN|HUTAGT|80AGDANA|N1FT6|DEMJINE|BARIMTLAL|H.T.Q|TOS5G|-GNEES|HARUULDAG|ZAHIRAMJAAR|CENE|CAAD|HALDLAGA|LITR|XALGALTAD|ZARQMAAR|-|QIMEGLEL|SURAGG-2|BARJ|NEEGDSEN|ZARLAH|BA2GUULAGDAH|H-NDEE|H-REETE2|Z-TGEL|NERLEGDDEG|X--GQID|XI2D0EREE|AXIGLAHAD|",
-    "H-RLEE|Z.0L.L..S|GOLQLON|USTGAJ|BOND5N|T.R.LHI2N|BNSU|TOGLOGQID|8RIAG|HAMAARDAG|TULJ|O2ROLCOOH|ILR--LJ|ENI2G|OHIN5G|-2LQLEGQ|TOOCSON|TOGOO|HARILCAAGAA|LAM5N|-RI2N|EHLEHED|Z.R--TE2|MEDEELELTE2|GU2J|ERDENETI2N|U8LDAA|HOL6J|HAMGAALALTAD|DORNOD5N|DUGU2T|HUUQN5|7UTA2|DE0XSEN|KORONA0IRUS|80AGDAH|DAAC5N|GAXUUN|L1KC|T.LD.G|SARAAR|XIMTGEL|GARAARAA|EREGTE2Q--DI2N|BARILDAJ|UGSRALT|XINEQLEGDSEN|CEC|--SEED|0IRUS5N|HEREGJILTI2N|AGUULAMJ|BATALGAAJUULSAN|CUG|SURALCSAN|BIL--|GARAN|DOTN5|HI2SNI2|NI2TEEREE|G-ND|T.SL--DI2N|OROLDSON|HEREGJ--LEGQ|H-NDETGEN|HIQEELLEJ|TERTEE|ERJ|TUSGAGDSAN|AGAAD|AHMAD5N|XATAJ|LAL5N|SURGUULIAS|ZASGAA|SALGAJ|HARAAG-2|A0AN|DANGAARAA|NI2LEED|-1TE2|SURTAL|NE0TR--LSEN|X01DI2N|N.L..LLI2N|TENHIMI2N|-LEMJ|DARAALAL|8RILCSAN|G1OLOGI|CAGTAA|GO9L|SIST1MTE2|7MAND|SURGAN|GELTG-2|ERI2N|HA2LT5N|BELQEER|H-QIRHI2LLI2N|B-RTGEJ|HUUDASN5|XUUDANGI2N|HELELCLEE|ZOHIOJ|GARGAH5G|A0AHAAS|MENDQILGEE|.ND.RL.L..|SA2HN5G|EN|CECGI2N|TERG--ND|HAAN5G|BUTLUURT|SALXG-2|H-SEEG-2|DARNA|ANGILL5N|ZORILT5G|PUUJIN|",
-    "HIQEELI2G|SAHIULAH|-2LQL--LEGQ|.G61|-2LD0ERQNI2|",
+    "IDSEN|BOSLOGO|HAGAST|061TNAM|TUXAAL5G|GAR0AL|SUDLAAQD5N|KORPORACI|OLIMPOD|NEMSEN|ETGEEDED|AJILLAHAD|XILJILT|BN|ORUULAGQ|TAS|OLDOHG-2|H-NDETGELI2N|KOLL1J|H--HDI2NHEE|G-2CETGENE|UULZALT5G|-HLI2N|HAMGAALALTTA2|GARDUULAH|TOLGO2D|EGEL|",
 )
