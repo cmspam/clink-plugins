@@ -380,50 +380,66 @@ def _candidates(latin):
 
 
 def _spell(latin):
-    """A word the dictionary does not have still gets written in Cyrillic.
+    """Writes a word the dictionary does not have.
 
-    This reads the Latin rather than the dictionary's spelling space, so ia
-    stays two letters and only ya becomes я. The remaining guesses come
-    from the corpus: an и straight after a vowel is the glide й, a word with
-    a visible а is back, a visible э makes it front, and with neither it
-    goes back, which is the commoner case.
+    The Latin is read rather than the dictionary's spelling space, so ia
+    stays two letters and only ya becomes one letter. The rest comes from
+    the corpus: an i after a vowel is the glide, a visible a is back, a
+    visible e makes it front, and with neither it goes back, which is the
+    commoner case.
     """
     tail = ""
-    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
-        if len(latin) > len(suffix) and latin.endswith(suffix):
+    suffixes = [["guigeer", "гүйгээр"], ["guige", "гүйгэ"], ["gui", "гүй"]]
+    for index in range(len(suffixes)):
+        suffix = suffixes[index][0]
+        cyrillic = suffixes[index][1]
+        if len(latin) > len(suffix) and latin[len(latin) - len(suffix):] == suffix:
             tail = cyrillic
             latin = latin[: len(latin) - len(suffix)]
             break
     letters = []
     position = 0
     while position < len(latin):
-        rule = None
-        for candidate in LATIN.get(latin[position], ()):
+        rule = ""
+        if latin[position] in LATIN:
+            candidates = LATIN[latin[position]]
+        else:
+            candidates = ()
+        for candidate in candidates:
             if latin[position:position + len(candidate[0])] == candidate[0]:
                 rule = candidate[0]
                 break
-        if rule is None:
-            position += 1
+        if not rule:
+            position = position + 1
             continue
         letters.append(rule)
-        position += len(rule)
+        position = position + len(rule)
     out = ""
     for rule in letters:
-        previous = out[-1] if out else ""
+        previous = ""
+        if out:
+            previous = out[len(out) - 1]
         if rule == "i":
-            out += "й" if previous in VOWELS else "и"
+            if previous in VOWELS:
+                out = out + "й"
+            else:
+                out = out + "и"
         elif rule == "y":
-            out += "й" if previous in VOWELS else "ы"
+            if previous in VOWELS:
+                out = out + "й"
+            else:
+                out = out + "ы"
         elif rule == "o":
-            out += "o"
+            out = out + "o"
         elif rule == "u":
-            out += "u"
+            out = out + "u"
         elif rule == "c":
-            out += "ц"
+            out = out + "ц"
         elif rule == "x":
-            out += "ш"
+            out = out + "ш"
         else:
-            out += SPELLING.get(rule, "")
+            if rule in SPELLING:
+                out = out + SPELLING[rule]
     front = False
     for character in out:
         if character == "а":
@@ -432,7 +448,10 @@ def _spell(latin):
         if character == "э":
             front = True
             break
-    out = out.replace("o", "ө" if front else "о").replace("u", "ү" if front else "у")
+    if front:
+        out = out.replace("o", "ө").replace("u", "ү")
+    else:
+        out = out.replace("o", "о").replace("u", "у")
     return out + tail
 
 

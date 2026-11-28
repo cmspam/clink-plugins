@@ -1,7 +1,7 @@
 # ---
-# name: Mongolian Latin Test D
+# name: Mongolian Latin Test N
 # icon: text.badge.checkmark
-# summary: The plugin without the conditional expressions
+# summary: The fallback without conditionals in replace
 # version: 1.2
 # author: cmspam
 # ---
@@ -225,10 +225,7 @@ def _spell(latin):
     goes back, which is the commoner case.
     """
     tail = ""
-    SUFFIXES = (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй"))
-    for index in range(3):
-        suffix = SUFFIXES[index][0]
-        cyrillic = SUFFIXES[index][1]
+    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
         if len(latin) > len(suffix) and latin.endswith(suffix):
             tail = cyrillic
             latin = latin[: len(latin) - len(suffix)]
@@ -236,12 +233,12 @@ def _spell(latin):
     letters = []
     position = 0
     while position < len(latin):
-        rule = ""
+        rule = None
         for candidate in LATIN.get(latin[position], ()):
             if latin[position:position + len(candidate[0])] == candidate[0]:
                 rule = candidate[0]
                 break
-        if not rule:
+        if rule is None:
             position += 1
             continue
         letters.append(rule)
@@ -250,15 +247,9 @@ def _spell(latin):
     for rule in letters:
         previous = out[-1] if out else ""
         if rule == "i":
-            if previous in VOWELS:
-                out += "й"
-            else:
-                out += "и"
+            out += "й" if previous in VOWELS else "и"
         elif rule == "y":
-            if previous in VOWELS:
-                out += "й"
-            else:
-                out += "ы"
+            out += "й" if previous in VOWELS else "ы"
         elif rule == "o":
             out += "o"
         elif rule == "u":
@@ -277,7 +268,10 @@ def _spell(latin):
         if character == "э":
             front = True
             break
-    out = out.replace("o", "ө" if front else "о").replace("u", "ү" if front else "у")
+    if front:
+        out = out.replace("o", "ө").replace("u", "ү")
+    else:
+        out = out.replace("o", "о").replace("u", "у")
     return out + tail
 
 

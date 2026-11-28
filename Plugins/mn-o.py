@@ -1,7 +1,7 @@
 # ---
-# name: Mongolian Latin Test A
+# name: Mongolian Latin Test O
 # icon: text.badge.checkmark
-# summary: The plugin with the fallback spelling stubbed out
+# summary: The fallback without dict get
 # version: 1.2
 # author: cmspam
 # ---
@@ -216,7 +216,64 @@ def _candidates(latin):
 
 
 def _spell(latin):
-    return ""
+    """A word the dictionary does not have still gets written in Cyrillic.
+
+    This reads the Latin rather than the dictionary's spelling space, so ia
+    stays two letters and only ya becomes я. The remaining guesses come
+    from the corpus: an и straight after a vowel is the glide й, a word with
+    a visible а is back, a visible э makes it front, and with neither it
+    goes back, which is the commoner case.
+    """
+    tail = ""
+    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
+        if len(latin) > len(suffix) and latin.endswith(suffix):
+            tail = cyrillic
+            latin = latin[: len(latin) - len(suffix)]
+            break
+    letters = []
+    position = 0
+    while position < len(latin):
+        rule = None
+        candidates = ()
+        if latin[position] in LATIN:
+            candidates = LATIN[latin[position]]
+        for candidate in candidates:
+            if latin[position:position + len(candidate[0])] == candidate[0]:
+                rule = candidate[0]
+                break
+        if rule is None:
+            position += 1
+            continue
+        letters.append(rule)
+        position += len(rule)
+    out = ""
+    for rule in letters:
+        previous = out[-1] if out else ""
+        if rule == "i":
+            out += "й" if previous in VOWELS else "и"
+        elif rule == "y":
+            out += "й" if previous in VOWELS else "ы"
+        elif rule == "o":
+            out += "o"
+        elif rule == "u":
+            out += "u"
+        elif rule == "c":
+            out += "ц"
+        elif rule == "x":
+            out += "ш"
+        else:
+            if rule in SPELLING:
+                out += SPELLING[rule]
+    front = False
+    for character in out:
+        if character == "а":
+            front = False
+            break
+        if character == "э":
+            front = True
+            break
+    out = out.replace("o", "ө" if front else "о").replace("u", "ү" if front else "у")
+    return out + tail
 
 
 def _wanted(state):

@@ -1,7 +1,7 @@
 # ---
-# name: Mongolian Latin Test B
+# name: Mongolian Latin Test M
 # icon: text.badge.checkmark
-# summary: The plugin without the is operator
+# summary: The fallback without endswith
 # version: 1.2
 # author: cmspam
 # ---
@@ -226,19 +226,19 @@ def _spell(latin):
     """
     tail = ""
     for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
-        if len(latin) > len(suffix) and latin.endswith(suffix):
+        if len(latin) > len(suffix) and latin[len(latin) - len(suffix):] == suffix:
             tail = cyrillic
             latin = latin[: len(latin) - len(suffix)]
             break
     letters = []
     position = 0
     while position < len(latin):
-        rule = ""
+        rule = None
         for candidate in LATIN.get(latin[position], ()):
             if latin[position:position + len(candidate[0])] == candidate[0]:
                 rule = candidate[0]
                 break
-        if not rule:
+        if rule is None:
             position += 1
             continue
         letters.append(rule)

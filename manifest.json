@@ -1,5 +1,5 @@
 {
-  "version": "plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b",
+  "version": "plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c",
   "plugins": [
     {
       "id": "adaptive-hitbox",
@@ -9,7 +9,7 @@
       "summary": "Moves each key's target toward where you actually tap it",
       "asset": {
         "path": "adaptive-hitbox.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/adaptive-hitbox.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/adaptive-hitbox.clinkplugin",
         "sha256": "830c58b58ede313f0603415f5a039e376dfdae22038e75e390651fd7d4416e3d",
         "byteCount": 2822
       },
@@ -23,7 +23,7 @@
       "summary": "A round popup that floats a little higher",
       "asset": {
         "path": "bubble-popups.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/bubble-popups.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/bubble-popups.clinkplugin",
         "sha256": "134353c1a758a7b9ea9dcf089707c8422ebcbca3cbd34c8958f6c98c71812df8",
         "byteCount": 974
       },
@@ -37,7 +37,7 @@
       "summary": "A little green lamp on shift that lights while caps lock is on",
       "asset": {
         "path": "caps-lock-light.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/caps-lock-light.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/caps-lock-light.clinkplugin",
         "sha256": "28f5eec4eef4c7791179a3232b98dc21d3656370240b726f17bd9d875c4c05a4",
         "byteCount": 5197
       },
@@ -51,7 +51,7 @@
       "summary": "The time on a key, for a custom layout",
       "asset": {
         "path": "clock.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/clock.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/clock.clinkplugin",
         "sha256": "20c5abc943be16237e42feff157e95eb1edabaa62a98c454ce29aec4bec19390",
         "byteCount": 1802
       },
@@ -65,7 +65,7 @@
       "summary": "The Colemak-DH layout, installed as a custom layout",
       "asset": {
         "path": "colemak-dh.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/colemak-dh.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/colemak-dh.clinkplugin",
         "sha256": "818c6a6f8811c54b750f4cac822f57c4cc18a44392eecec2718a3d82b34ab776",
         "byteCount": 1148
       },
@@ -79,7 +79,7 @@
       "summary": "A runner on the space bar: tap to jump the dino over the cacti",
       "asset": {
         "path": "dino.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/dino.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/dino.clinkplugin",
         "sha256": "683b1d9f27b656f2895e4f91fcea84e816760da89fb3d07a2f64d8c5cdf91da7",
         "byteCount": 13869
       },
@@ -93,7 +93,7 @@
       "summary": "Flick to delete a word, type a space or pick a suggestion",
       "asset": {
         "path": "flick-gestures.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/flick-gestures.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/flick-gestures.clinkplugin",
         "sha256": "f5670dee7c8e13e6bc3032e8e368f477c96958fa2cf2ea55ae9528c38fa1579e",
         "byteCount": 3772
       },
@@ -107,7 +107,7 @@
       "summary": "Hangman on the space bar: the letter keys are your guesses",
       "asset": {
         "path": "hangman.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/hangman.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/hangman.clinkplugin",
         "sha256": "eb5285ee72007d6640d3694d86c8f7bb44d189b79ae9b4c33e10a2281713ddb5",
         "byteCount": 12645
       },
@@ -121,7 +121,7 @@
       "summary": "A knob in the top bar that sets how strong your key presses feel",
       "asset": {
         "path": "haptic-strength.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/haptic-strength.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/haptic-strength.clinkplugin",
         "sha256": "2fd2c3c1fab33bc1a0fa3bb84fb1a62c959ee31f05d13b173562261ed20a9912",
         "byteCount": 1645
       },
@@ -135,7 +135,7 @@
       "summary": "A heavier haptic on space, and its own feel for return and delete",
       "asset": {
         "path": "heavy-space.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/heavy-space.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/heavy-space.clinkplugin",
         "sha256": "14ef0c65cee320e5de40592309f8be377cdec6428a6ae6abfdd63440ad601fb7",
         "byteCount": 1568
       },
@@ -149,7 +149,7 @@
       "summary": "Keyboard2",
       "asset": {
         "path": "keyboard2-themes.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/keyboard2-themes.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/keyboard2-themes.clinkplugin",
         "sha256": "3ced453f2b9ab2184e06ae2f73f12d574349a34ef1d3c97b3ac9f4633201dfc7",
         "byteCount": 10546
       },
@@ -163,7 +163,7 @@
       "summary": "Show the active language in the corner of the space bar",
       "asset": {
         "path": "language-badge.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/language-badge.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/language-badge.clinkplugin",
         "sha256": "7d027935f1479b45ab909f3bde97a5541c3716098d7d9539329d2d1faaaf9b2a",
         "byteCount": 759
       },
@@ -177,7 +177,7 @@
       "summary": "Show the active language as a flag emoji on the space bar",
       "asset": {
         "path": "language-emoji.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/language-emoji.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/language-emoji.clinkplugin",
         "sha256": "b7a68db141e3d4711e1a6f243a46e54c33d69fd53278ad37d41773e25fdfcc6f",
         "byteCount": 696
       },
@@ -191,7 +191,7 @@
       "summary": "Show the active language with Clink\u2019s bundled flag artwork",
       "asset": {
         "path": "language-flag.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/language-flag.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/language-flag.clinkplugin",
         "sha256": "c70abfd39665a25c9e0a22b6bbedbcd826879717973742eb5d5ebe98c43ded20",
         "byteCount": 685
       },
@@ -205,7 +205,7 @@
       "summary": "Swipe the space bar to switch languages with a visible language code",
       "asset": {
         "path": "language-switcher.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/language-switcher.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/language-switcher.clinkplugin",
         "sha256": "b7332fdc37c4f68437b62aa246c5836e03d1a981c472137db5fd87c9d10e8056",
         "byteCount": 2825
       },
@@ -219,7 +219,7 @@
       "summary": "Two lighting effects for the Effects page",
       "asset": {
         "path": "light-show.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/light-show.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/light-show.clinkplugin",
         "sha256": "cbee94a8d0b973b92d802c235a1ceccd6cd5b121d0a2b46d68b4a23fdadb8f88",
         "byteCount": 1712
       },
@@ -233,7 +233,7 @@
       "summary": "An example that adjusts the built-in mechanical key style",
       "asset": {
         "path": "low-profile-mod.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/low-profile-mod.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/low-profile-mod.clinkplugin",
         "sha256": "68b3c72ce351e8448ce4f7617a2f616813854e10c8cc73be9349ee1308b1bb29",
         "byteCount": 900
       },
@@ -247,135 +247,93 @@
       "summary": "A low-profile mechanical key style for the theme editor",
       "asset": {
         "path": "low-profile.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/low-profile.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/low-profile.clinkplugin",
         "sha256": "f6ad069bb1e9a7d2afe0f478bd50bc00501bc144327ab0540eb8e8895366416d",
         "byteCount": 2876
       },
       "platform": "both"
     },
     {
-      "id": "mn-a",
-      "name": "Mongolian Latin Test A",
+      "id": "mn-j",
+      "name": "Mongolian Latin Test J",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The plugin with the fallback spelling stubbed out",
+      "summary": "The fallback without a docstring",
       "asset": {
-        "path": "mn-a.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-a.clinkplugin",
-        "sha256": "7925c297cabf6097845ef341fd87fa4442cdc15bb74fad4fa85e4319a266e08c",
-        "byteCount": 14441
+        "path": "mn-j.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-j.clinkplugin",
+        "sha256": "f3e20f5f850a5c7c9f60b8a488492705998ed8a553008645b11b0aa38b6332be",
+        "byteCount": 16084
       },
       "platform": "both"
     },
     {
-      "id": "mn-b",
-      "name": "Mongolian Latin Test B",
+      "id": "mn-k",
+      "name": "Mongolian Latin Test K",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The plugin without the is operator",
+      "summary": "The fallback with a plain English docstring",
       "asset": {
-        "path": "mn-b.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-b.clinkplugin",
-        "sha256": "c7a527b37693123b4943bedb09c1d47fd68be6f635aa135eb6579da8c2ba61bf",
-        "byteCount": 16451
+        "path": "mn-k.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-k.clinkplugin",
+        "sha256": "4b30dadc28655b873b69b99a5628ce0d9155ff5f4cc1995d498b71abded7b041",
+        "byteCount": 16457
       },
       "platform": "both"
     },
     {
-      "id": "mn-c",
-      "name": "Mongolian Latin Test C",
+      "id": "mn-l",
+      "name": "Mongolian Latin Test L",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The plugin without the loop over pairs",
+      "summary": "The fallback without a negative index",
       "asset": {
-        "path": "mn-c.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-c.clinkplugin",
-        "sha256": "465eaca68ba53f92a44f2e0d2ad139f966aa449af1d5b83ef5fc20bb7c93e994",
-        "byteCount": 16545
+        "path": "mn-l.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-l.clinkplugin",
+        "sha256": "1cbf4a432edba0912f644338f14bd207fb8b3781f0ce89531fa4dcf34d31c62e",
+        "byteCount": 16497
       },
       "platform": "both"
     },
     {
-      "id": "mn-d",
-      "name": "Mongolian Latin Test D",
+      "id": "mn-m",
+      "name": "Mongolian Latin Test M",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The plugin without the conditional expressions",
+      "summary": "The fallback without endswith",
       "asset": {
-        "path": "mn-d.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-d.clinkplugin",
-        "sha256": "41204868a2c56f98ac39fd976de815ed2b52de17585557b723b1a4477c90617f",
-        "byteCount": 16665
+        "path": "mn-m.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-m.clinkplugin",
+        "sha256": "b50f9318db7aa758b2629730d21e9ba307a08b18ceabb4ec6c47c753a8705d84",
+        "byteCount": 16470
       },
       "platform": "both"
     },
     {
-      "id": "mn-e",
-      "name": "Mongolian Latin Test E",
+      "id": "mn-n",
+      "name": "Mongolian Latin Test N",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The whole plugin with a smaller word list",
+      "summary": "The fallback without conditionals in replace",
       "asset": {
-        "path": "mn-e.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-e.clinkplugin",
-        "sha256": "c05a67f64856a18160eb0fc6c084dcb3ac89bad9b2e4bb0c308630dae5828565",
-        "byteCount": 39597
+        "path": "mn-n.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-n.clinkplugin",
+        "sha256": "5488480cd5a8355fba62c9c5158d08f19c93941374a941956d105fa67686e410",
+        "byteCount": 16518
       },
       "platform": "both"
     },
     {
-      "id": "mn-f",
-      "name": "Mongolian Latin Test F",
+      "id": "mn-o",
+      "name": "Mongolian Latin Test O",
       "version": "1.2",
       "icon": "text.badge.checkmark",
-      "summary": "The whole plugin without the fallback, at full size",
+      "summary": "The fallback without dict get",
       "asset": {
-        "path": "mn-f.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-f.clinkplugin",
-        "sha256": "e798c8884ab2343fd6d6359f3b7eb5ec427d985685f75f9532c7cb4bbf7abb0c",
-        "byteCount": 45804
-      },
-      "platform": "both"
-    },
-    {
-      "id": "mn-g",
-      "name": "Mongolian Latin Test G",
-      "version": "1.2",
-      "icon": "text.badge.checkmark",
-      "summary": "The working code with a larger word list",
-      "asset": {
-        "path": "mn-g.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-g.clinkplugin",
-        "sha256": "13e20655a3042ea347f332756ddcf1337cac69498703c71ca032247b905598c8",
-        "byteCount": 44327
-      },
-      "platform": "both"
-    },
-    {
-      "id": "mn-h",
-      "name": "Mongolian Latin Test H",
-      "version": "1.2",
-      "icon": "text.badge.checkmark",
-      "summary": "The working code with the largest word list",
-      "asset": {
-        "path": "mn-h.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-h.clinkplugin",
-        "sha256": "9eaa83f8b864c8d25d90a5a21cdef2cdb77124da96431cdd7317e28e3bb93138",
-        "byteCount": 49235
-      },
-      "platform": "both"
-    },
-    {
-      "id": "mn-i",
-      "name": "Mongolian Latin Test I",
-      "version": "1.2",
-      "icon": "text.badge.checkmark",
-      "summary": "The plugin's own switches with no engine under them",
-      "asset": {
-        "path": "mn-i.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mn-i.clinkplugin",
-        "sha256": "10ab9cccc964cb9297b76ff6ac4238484b94579f7284fadf1d5be85f22dc3f8d",
-        "byteCount": 7681
+        "path": "mn-o.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mn-o.clinkplugin",
+        "sha256": "a1155b79542bfbb88c7e7b911e0ae486a256400c087a2122e2a0b3d907697559",
+        "byteCount": 16570
       },
       "platform": "both"
     },
@@ -387,9 +345,9 @@
       "summary": "Type Mongolian in Latin letters and get Cyrillic",
       "asset": {
         "path": "mongolian-latin.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mongolian-latin.clinkplugin",
-        "sha256": "c84b92f44f1da5d88721b50c48a4c3bef7e8cf1dab66ca432102a00056cc9491",
-        "byteCount": 47834
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mongolian-latin.clinkplugin",
+        "sha256": "4a160a26332a42da157e1339d9e97bd715ee0810d6b3d24f4380bc7882744bf9",
+        "byteCount": 48302
       },
       "platform": "both"
     },
@@ -401,7 +359,7 @@
       "summary": "The keys take on the colour of what you are writing",
       "asset": {
         "path": "mood-ring.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/mood-ring.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/mood-ring.clinkplugin",
         "sha256": "7d5d3972389e1d46904ce4a1c505e6055c2b89f8d5d72d3e3bbfb780e7a94a22",
         "byteCount": 9681
       },
@@ -415,7 +373,7 @@
       "summary": "An entrance, a key press, a letter bounce and a page switch",
       "asset": {
         "path": "motion-kit.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/motion-kit.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/motion-kit.clinkplugin",
         "sha256": "ec4b8d0b6089b004d531708ec0ba563cf68130f6e65b00a588f86ac72968ea4c",
         "byteCount": 1821
       },
@@ -429,7 +387,7 @@
       "summary": "Browse themes shared from NuKey and bring them into Clink",
       "asset": {
         "path": "nukey-themes.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/nukey-themes.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/nukey-themes.clinkplugin",
         "sha256": "b94573d54ada5eed0e672986e62cb9e16b381a476f5d3cb93bec01e10d1e3098",
         "byteCount": 7456
       },
@@ -443,7 +401,7 @@
       "summary": "A ring in the theme's accent colour around whichever key is down",
       "asset": {
         "path": "press-spark.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/press-spark.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/press-spark.clinkplugin",
         "sha256": "cbd2afb833bd7cb3e990003503c61ba4ac8ab6ade5cb906ce31774fa4e276611",
         "byteCount": 1718
       },
@@ -457,7 +415,7 @@
       "summary": "A bar across the space key that fills as a sentence runs long",
       "asset": {
         "path": "prose-metronome.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/prose-metronome.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/prose-metronome.clinkplugin",
         "sha256": "5419fca1ddc03aecec1560c790519d22a751cbf06c2f3e13973a37964ff5a59e",
         "byteCount": 7403
       },
@@ -471,7 +429,7 @@
       "summary": "Suggests and expands shorthand, and keeps autocorrect off capitals and numbers",
       "asset": {
         "path": "shorthand.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/shorthand.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/shorthand.clinkplugin",
         "sha256": "2481d060ad955b2a54aad67482a1c9a5cb44c1132b3c4eaee0ad5da32b1fabbf",
         "byteCount": 2097
       },
@@ -485,7 +443,7 @@
       "summary": "Snow drifting behind the keys, with a puff from every key you press",
       "asset": {
         "path": "snowfall.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/snowfall.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/snowfall.clinkplugin",
         "sha256": "d01e714f6aefad56823ac870d5ea111c8085d336d3fabe6eaa9e1ea6cd8e7053",
         "byteCount": 1780
       },
@@ -499,7 +457,7 @@
       "summary": "A sparkline of your recent typing speed, drawn on the space bar",
       "asset": {
         "path": "spacebar-graph.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/spacebar-graph.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/spacebar-graph.clinkplugin",
         "sha256": "c3c0fea11ddc8aaea409a49c639df3f48fa8c502fe3238a9252acd94a33dfcd1",
         "byteCount": 5982
       },
@@ -513,7 +471,7 @@
       "summary": "Six trails for swipe typing, from a candy ribbon to a line of hearts",
       "asset": {
         "path": "swipe-trails.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/swipe-trails.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/swipe-trails.clinkplugin",
         "sha256": "4822c355d8213870a7ef13fdb042c9c66ecb90cac89fcf15160e44acf97bb957",
         "byteCount": 4784
       },
@@ -527,7 +485,7 @@
       "summary": "A knob in the top bar that sets how loud your key presses are",
       "asset": {
         "path": "switch-volume.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/switch-volume.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/switch-volume.clinkplugin",
         "sha256": "17a0e89932f720758c25d9837e8dc8f9a0158878a9bbde76fd8bb1d62a86f4c4",
         "byteCount": 1485
       },
@@ -541,7 +499,7 @@
       "summary": "Typewriter keys, a light and a dark theme, a typebar press and clacky haptics",
       "asset": {
         "path": "typewriter.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/typewriter.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/typewriter.clinkplugin",
         "sha256": "7035f2bc516bd4d5e10f4bff68ddc882c2da22f27a45bd3ae201f99654b5f52b",
         "byteCount": 9306
       },
@@ -555,7 +513,7 @@
       "summary": "Show your typing speed on the space bar",
       "asset": {
         "path": "wpm-spacebar.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/wpm-spacebar.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/wpm-spacebar.clinkplugin",
         "sha256": "7a87fe3e8c1c07c529c3166e69d370a1a6b07882378c2091806ca426c1702bc5",
         "byteCount": 1648
       },
@@ -569,7 +527,7 @@
       "summary": "A live graph of your typing speed, as a layout element",
       "asset": {
         "path": "wpm-sparkline.clinkplugin",
-        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-12d0323f56a386547beed1a25277e31c22d223a63211d17c7250cad0b7c2df5b/wpm-sparkline.clinkplugin",
+        "url": "https://github.com/cmspam/clink-plugins/releases/download/plugins-d9773c2cc4ee27fc3bdab41130c57552584d36d27070fb67f07e081054fc280c/wpm-sparkline.clinkplugin",
         "sha256": "bd5ade56189006d001065f9a427d8e80c23f833c67a38f6177e23966582b124a",
         "byteCount": 1853
       },

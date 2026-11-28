@@ -1,7 +1,7 @@
 # ---
-# name: Mongolian Latin Test C
+# name: Mongolian Latin Test K
 # icon: text.badge.checkmark
-# summary: The plugin without the loop over pairs
+# summary: The fallback with a plain English docstring
 # version: 1.2
 # author: cmspam
 # ---
@@ -219,16 +219,13 @@ def _spell(latin):
     """A word the dictionary does not have still gets written in Cyrillic.
 
     This reads the Latin rather than the dictionary's spelling space, so ia
-    stays two letters and only ya becomes я. The remaining guesses come
-    from the corpus: an и straight after a vowel is the glide й, a word with
-    a visible а is back, a visible э makes it front, and with neither it
+    stays two letters and only ya becomes one letter. The remaining guesses come
+    from the corpus: an i after a vowel is the glide, a word with
+    a visible a is back, a visible e makes it front, and with neither it
     goes back, which is the commoner case.
     """
     tail = ""
-    SUFFIXES = (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй"))
-    for index in range(3):
-        suffix = SUFFIXES[index][0]
-        cyrillic = SUFFIXES[index][1]
+    for suffix, cyrillic in (("guigeer", "гүйгээр"), ("guige", "гүйгэ"), ("gui", "гүй")):
         if len(latin) > len(suffix) and latin.endswith(suffix):
             tail = cyrillic
             latin = latin[: len(latin) - len(suffix)]
@@ -236,12 +233,12 @@ def _spell(latin):
     letters = []
     position = 0
     while position < len(latin):
-        rule = ""
+        rule = None
         for candidate in LATIN.get(latin[position], ()):
             if latin[position:position + len(candidate[0])] == candidate[0]:
                 rule = candidate[0]
                 break
-        if not rule:
+        if rule is None:
             position += 1
             continue
         letters.append(rule)
