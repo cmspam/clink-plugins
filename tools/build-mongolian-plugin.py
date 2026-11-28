@@ -29,9 +29,9 @@ LOW_CODES = "0123456789-."
 
 HEADER = '''# ---
 # name: Mongolian Latin
-# icon: textformat
+# icon: text.badge.checkmark
 # summary: Type Mongolian in Latin letters and get Cyrillic
-# version: 1.0
+# version: 1.1
 # author: cmspam
 # ---
 
@@ -142,7 +142,7 @@ def main() -> None:
         current += piece
     if current:
         chunks.append(current)
-    literal = "\n".join(f'    "{chunk}"' for chunk in chunks)
+    literal = "\n".join(f'    """{chunk}""",' for chunk in chunks)
 
     # The tables the plugin carries, keyed by the code character.
     letter_table = {code[letter]: letter for letter in CYR}
@@ -281,7 +281,7 @@ def _parse(latin, beam):
 def _load():
     """Build the index: each word under every spelling that reaches it."""
     rank = 0
-    for record in DATA.split("|"):
+    for record in "".join(DATA).split("|"):
         if not record:
             continue
         if min(record) < "A":
@@ -310,6 +310,7 @@ def _decode(record):
 
 def _candidates(latin):
     """The words a typed Latin word might mean, best first."""
+    _ready()
     parses = _parse(latin, 24)
     if parses:
         # The parses come back cheapest first, so the first one is the
@@ -402,9 +403,19 @@ def _wanted(state):
     return code.startswith("mn")
 
 
+def _ready():
+    """Build the index the first time it is needed."""
+    if not INDEX:
+        _load()
+
+
 def initial():
-    _load()
     return {{"on": True, "always": False}}
+
+
+def on_open(state):
+    _ready()
+    return state
 
 
 def on_language(code, state):
