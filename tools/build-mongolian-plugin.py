@@ -31,7 +31,7 @@ HEADER = '''# ---
 # name: Mongolian Latin
 # icon: text.badge.checkmark
 # summary: Type Mongolian in Latin letters and get Cyrillic
-# version: 1.2
+# version: 1.3
 # author: cmspam
 # ---
 
@@ -191,6 +191,12 @@ def main() -> None:
     # sign that is written in the middle still has to be typed, so it takes
     # the same skeleton as "i" at a cost, and the fallback spelling writes ъ.
     latin.append(("'", "I", 3))
+    # A bare y can also be the palatal vowel, so "yvah" reaches явах and
+    # "goy" reaches гоё. The usual spellings, "ya", "yu" and "yo", are
+    # cheaper and keep their place, and the dictionary decides the rest.
+    latin.append(("y", "IA", 3))
+    latin.append(("y", "IU", 3))
+    latin.append(("y", "IO", 3))
 
     body = f'''
 CYR = "{CYR}"
