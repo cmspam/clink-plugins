@@ -113,6 +113,84 @@ def build_tables(translit: dict):
     return code, options, after, steady, loose
 
 
+TAIL_HELPER = '''def _tail(word):
+    """The Latin letters at the end of a word, if there are any.
+
+    A word the plugin has already rewritten holds Cyrillic at the front and
+    the letters just typed at the end, so only the tail is Latin.
+    """
+    end = len(word)
+    start = end
+    while start > 0:
+        character = word[start - 1]
+        # The apostrophe belongs to the word, because the hard sign is
+        # written with one in the middle of it.
+        if character == "'":
+            start = start - 1
+            continue
+        if character < "A" or character > "z":
+            break
+        start = start - 1
+    if start == end:
+        return ""
+    return word[start:end]
+
+
+'''
+
+
+def hooks_for(mode: str) -> str:
+    """The text hooks, in the three shapes the plugin comes in.
+
+    None leaves the text as it was typed until the word ends. Inline
+    rewrites the word as the bar settles, so the keyboard's own dictionary
+    and next-word model read Cyrillic. Spaced does the same and ends the
+    word with a space, so the next word starts clean.
+    """
+    if mode == "none":
+        return '''
+def suggestions(word, state):
+    if not _ordinary(word) or not _wanted(state):
+        return []
+    return _candidates(word.lower())
+
+
+def correct(word, fix, state):
+    if not _ordinary(word) or not _wanted(state):
+        return None
+    candidates = _candidates(word.lower())
+    if not candidates:
+        return None
+    return candidates[0]
+'''
+    suffix = ' + " "' if mode == "spaced" else ""
+    return f'''
+{TAIL_HELPER}def suggestions(word, state):
+    if not _wanted(state):
+        return []
+    tail = _tail(word)
+    if not tail or not _ordinary(tail):
+        return []
+    candidates = _candidates(tail.lower())
+    if not candidates:
+        return []
+    replace(len(word), word[: len(word) - len(tail)] + candidates[0]{suffix})
+    return [candidates[0]]
+
+
+def correct(word, fix, state):
+    if not _wanted(state):
+        return None
+    tail = _tail(word)
+    if not tail or not _ordinary(tail):
+        return None
+    candidates = _candidates(tail.lower())
+    if not candidates:
+        return None
+    return word[: len(word) - len(tail)] + candidates[0]
+'''
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--words", required=True, help="word<TAB>count list, most frequent first")
@@ -120,6 +198,8 @@ def main() -> None:
     parser.add_argument("--out", required=True, help="plugin file to write")
     parser.add_argument("--limit", type=int, default=6000, help="how many words to carry")
     parser.add_argument("--name", default="Mongolian Latin", help="the name the plugin shows")
+    parser.add_argument("--rewrite", choices=("none", "inline", "spaced"), default="none",
+                        help="rewrite the word as the bar settles, or leave it to the end")
     arguments = parser.parse_args()
 
     translit = json.loads(pathlib.Path(arguments.translit).read_text(encoding="utf-8"))
@@ -197,6 +277,8 @@ def main() -> None:
     latin.append(("y", "IA", 3))
     latin.append(("y", "IU", 3))
     latin.append(("y", "IO", 3))
+
+    hooks = hooks_for(arguments.rewrite)
 
     body = f'''
 CYR = "{CYR}"
@@ -518,20 +600,8 @@ def _ordinary(word):
     return True
 
 
-def suggestions(word, state):
-    if not _ordinary(word) or not _wanted(state):
-        return []
-    return _candidates(word.lower())
+{hooks}'''
 
-
-def correct(word, fix, state):
-    if not _ordinary(word) or not _wanted(state):
-        return None
-    candidates = _candidates(word.lower())
-    if not candidates:
-        return None
-    return candidates[0]
-'''
 
     text = HEADER.replace("# name: Mongolian Latin", f"# name: {arguments.name}") + body + f"\nDATA = (\n{literal}\n)\n"
     check_quotes(text)

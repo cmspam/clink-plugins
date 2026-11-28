@@ -346,6 +346,7 @@ def _ordinary(word):
     return True
 
 
+
 def suggestions(word, state):
     if not _ordinary(word) or not _wanted(state):
         return []
